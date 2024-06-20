@@ -1,0 +1,7 @@
+venv/*
+*.txt
+.pypirc
+setup.py
+villog.egg-info/*
+dist/*
+build/*
