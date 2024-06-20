@@ -21,6 +21,7 @@ class Logger:
         return f"Log file: {self.file_path}"
 
     def __str_time(self) -> str:
+        '''Returns the current time as a string'''
         current_time = datetime.datetime.now()
         try:
             return current_time.strftime(self.time_format)
@@ -29,39 +30,70 @@ class Logger:
             return current_time.strftime("%Y.%m.%d %H:%M:%S")
 
     def __log_to_file(self, content: str):
+        '''Appends file'''
         with open(self.file_path, "a", encoding = self.encoding) as file:
             file.write(content)
 
     def log(self, content: str = "") -> None:
-        '''Log content to file'''
+        '''Logs content to file'''
         content = self.__str_time() + self.separator + str(content) + "\n"
-        print(content)
+        print(content.strip())
         self.__log_to_file(content)
 
     def change_path(self, file_path: str) -> str:
-        '''Change the log file path'''
+        '''Changes the log file path'''
         if file_path:
             self.file_path = file_path
             return f"Changed path from {self.file_path} to {file_path}"
         return "No path provided"
 
     def change_encoding(self, encoding: str) -> str:
-        '''Change the log file encoding'''
+        '''Changes the log file encoding'''
         if encoding:
             self.encoding = encoding
             return f"Changed encoding to {encoding}"
         return "No encoding provided"
 
     def change_time_format(self, time_format: str) -> str:
-        '''Change the time format'''
+        '''Changes the time format'''
         if time_format:
             self.time_format = time_format
             return f"Changed time format to {time_format}"
         return "No time format provided"
 
     def change_separator(self, separator: str) -> str:
-        '''Change the separator'''
+        '''Changes the separator'''
         if separator:
             self.separator = separator
             return f"Changed separator to {separator}"
         return "No separator provided"
+
+    def read(self) -> str:
+        '''Reads the log file'''
+        if os.path.exists(self.file_path):
+            with open(self.file_path, "r", encoding=self.encoding) as file:
+                lines = file.readlines()
+                return "".join(lines)
+        return "Log file does not exist"
+    
+    def read_list(self) -> list:
+        '''Reads the log file as a list'''
+        if os.path.exists(self.file_path):
+            with open(self.file_path, "r", encoding=self.encoding) as file:
+                lines = file.readlines()
+                return lines
+        return ["Log file does not exist"]
+
+    def clear(self) -> str:
+        '''Clears the log file'''
+        if os.path.exists(self.file_path):
+            with open(self.file_path, "w", encoding=self.encoding) as file:
+                return "Log file cleared"
+        return "Log file does not exist"
+
+    def remove(self) -> str:
+        '''Removes the log file'''
+        if os.path.exists(self.file_path):
+            os.remove(self.file_path)
+            return "Log file removed"
+        return "Log file does not exist"
