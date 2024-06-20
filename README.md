@@ -30,8 +30,8 @@ l.log("test")
 - ```read_list()```: returns the content of the log file in a list line by line
 - ```clear()```: clears the log file
 
-## PIP
-Can be installed via **pip**, with:
+## Install
+Via **pip**, with:
 ```
 pip install villog
 ```

@@ -4,3 +4,4 @@ villog.egg-info/*
 dist/*
 build/*
 *.sh
+test.py
