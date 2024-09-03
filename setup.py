@@ -8,10 +8,13 @@ long_description = (this_directory / "README.md").read_text()
 
 setup(
     name = "villog",
-    version = "0.0.7",
+    version = "0.0.9",
     description = "A simple python library for logging",
     author = "Krisztián Villers",
     packages = find_packages(),
     long_description = long_description,
-    long_description_content_type = "text/markdown"
+    long_description_content_type = "text/markdown",
+    install_requires=[
+          'xlsxwriter'
+    ]
 )

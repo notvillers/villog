@@ -5,3 +5,4 @@ dist/*
 build/*
 *.sh
 test.py
+*.log

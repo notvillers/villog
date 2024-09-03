@@ -1,6 +1,8 @@
 # Villog is a simple logger for your everyday projects
 
-## Usage
+## Villog
+
+### Usage
 **script.py**
 ```
 from villog import Logger
@@ -29,6 +31,8 @@ l.log("test")
 - ```read()```: returns the content of the log file
 - ```read_list()```: returns the content of the log file in a list line by line
 - ```clear()```: clears the log file
+
+## Writexcel
 
 ## Install
 Via **pip**, with:
