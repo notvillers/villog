@@ -108,11 +108,20 @@ class WorkBook:
                     for element in line:
                         # Checking for basic types
                         if isinstance(element, date):
-                            sheet.write_datetime(row, col, element, date_format)
+                            try:
+                                sheet.write_datetime(row, col, element, date_format)
+                            except:
+                                pass
                         elif isinstance(element, Decimal):
-                            sheet.write(row, col, element, number_format)
+                            try:
+                                sheet.write(row, col, element, number_format)
+                            except:
+                                pass
                         else:
-                            sheet.write(row, col, element)
+                            try:
+                                sheet.write(row, col, element)
+                            except:
+                                pass
                         col += 1
                         last_col = (col if col > last_col else last_col)
                     row += 1
