@@ -24,7 +24,6 @@ class Logger:
                 time_format: str = "%Y.%m.%d %H:%M:%S",
                 separator: str = "\t",
                 silent: bool = False,
-                cache_log: bool = False,
                 enable_remove: bool = False,
                 strip_content: bool = False
             ):
@@ -35,7 +34,6 @@ class Logger:
             time_format: time format
             separator: separator
             silent: if True, it will not print the log, just write it to the file
-            cache_log: if True, it will cache the log
             enable_remove: if True, it will enable the remove function
             strip_content: if True, it will strip the content
         '''
@@ -44,9 +42,6 @@ class Logger:
         self.time_format = time_format
         self.separator = separator
         self.__silent = silent
-        self.__cache_log = cache_log,
-        if self.__cache_log:
-            self.cache = self.read_list()
         self.__enable_remove = enable_remove
         self.__strip_content = strip_content
 
@@ -70,8 +65,6 @@ class Logger:
         '''Appends file'''
         with open(self.file_path, "a", encoding = self.encoding) as file:
             file.write(content)
-            if self.__cache_log:
-                self.cache.append(content)
 
     def __strip(self, content: str) -> str:
         '''Strips the content'''
@@ -81,7 +74,7 @@ class Logger:
         '''Logs content to file'''
         content = self.__str_time() + self.separator + str(self.__strip(content)) + "\n"
         if not self.__silent:
-            print(content)
+            print(content.strip())
         self.__log_to_file(content)
         return content
 
@@ -105,22 +98,6 @@ class Logger:
         self.separator = separator
         print(f"Changed separator to {separator}")
 
-    def read(self) -> None:
-        '''Reads the log file'''
-        if os.path.exists(self.file_path):
-            with open(self.file_path, "r", encoding = self.encoding) as file:
-                lines = file.readlines()
-                return "".join(lines)
-        self.__error(f"Log file does not exist ({self.file_path})")
-
-    def read_list(self) -> list[str]:
-        '''Reads the log file as a list'''
-        if os.path.exists(self.file_path):
-            with open(self.file_path, "r", encoding = self.encoding) as file:
-                lines = [line.strip() for line in file.readlines()]
-                return lines
-        self.__error(f"Log file does not exist ({self.file_path})")
-
     def clear(self) -> None:
         '''Clears the log file'''
         if self.__enable_remove:
@@ -138,10 +115,3 @@ class Logger:
                 print(f"Log file removed ({self.file_path})")
             self.__error(f"Log file does not exist ({self.file_path})")
         self.__error("Removal is not enabled")
-
-    def empty_cache(self) -> None:
-        '''Empties the cache'''
-        if self.__cache_log:
-            self.cache = []
-            print("Cache emptied")
-        self.__error("Cache is not enabled")
