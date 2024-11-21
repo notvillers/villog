@@ -3,16 +3,27 @@
 import os
 from datetime import date
 from decimal import Decimal
+import uuid
 import xlsxwriter
 
 class WorkSheet:
-    '''Worksheet class for the workbook class
-    name: name of the worksheet
-    header: header of the worksheet, list[str]
-    data: data of the worksheet, list[list[]]
-    header_comment: comment on the headers, list[[str, str]]'''
+    '''Worksheet class'''
 
-    def __init__(self, name: str, header: list[str], data: list[list], header_comment: list = None):
+    def __init__(self,
+        name: str,
+        header: list[str],
+        data: list[list[any]],
+        header_comment: list = None
+    ):
+        '''
+            Worksheet class
+
+            Parameters:
+                name (str): name of the worksheet
+                header (list[str]): header of the worksheet
+                data (list[list[any]]): data of the worksheet
+                header_comment (list[str, str]): comment for the header
+        '''
         self.name: str = name
         self.header: list[str] = header
         self.data: list[list] = data
@@ -22,8 +33,19 @@ class WorkSheet:
         return self.name
 
     # Seggesting a column width with min. and max. filter
-    def suggest_width(self, col: int, min_width: int = 10, max_width: int = 40):
-        '''Suggesting a column width with min. and max. filter'''
+    def suggest_width(self,
+        col: int,
+        min_width: int = 10,
+        max_width: int = 40
+    ):
+        '''
+            Suggesting a column width with min. and max. filter
+        
+            Parameters:
+                col (int): column index
+                min_width (int): minimum width
+                max_width (int): maximum width
+        '''
 
         length: int = min_width
         if self.header:
@@ -38,42 +60,76 @@ class WorkSheet:
 
 
 class WorkBook:
-    '''Workbook class
-    name: name of the workbook
-    content: content of the workbook, worksheet or list[worksheet]'''
+    '''Workbook class'''
 
-    def __init__(self, name: str, content: list[WorkSheet]):
+    def __init__(self,
+        name: str,
+        sheets: list[WorkSheet]
+    ):
+        '''
+            Workbook class
+
+            Parameters:
+                name (str): name of the workbook
+                sheets (list[WorkSheet]): worksheets of the workbook
+        '''
         self.name: str = name
-        self.content: list[WorkSheet] = content
+        self.sheets: list[WorkSheet] = sheets
+        self.sheet_count: int = self.__get_sheet_count()
+        self.__uuid: str = self.__gen_uuid()
 
     def __str__(self):
         return self.name
     
-    # Creating the .xlsx
-    def xlsx_create(self, file_path: str = os.getcwd(), file_name: str = None) -> str:
-        '''Creating the .xlsx'''
+    def __is_list(self) -> bool:
+        '''return if the sheets is a list'''
+        return type(self.sheets) == list
 
-        # Creating the name of the .xlsx
-        file_name: str = (self.name if file_name is None else file_name)
-        if not file_name.lower().endswith(".xlsx"):
-            file_name += ".xlsx"
-        excel_file: str = os.path.join(file_path, file_name)
+    def __get_sheet_count(self) -> int:
+        '''return the number of sheets'''
+        return 1 if not self.__is_list() else len(self.sheets)
+
+    def __gen_uuid(self,
+        length: int = 8
+    ) -> str:
+        '''
+            Generating a random UUID
+            
+            Parameters:
+                length (int): length of the UUID
+        '''
+        return str(uuid.uuid4())[:length]
+
+    # Creating the .xlsx
+    def xlsx_create(self,
+        file_path: str = None
+    ) -> str:
+        '''
+            Creating the .xlsx
+
+            Parameters:
+                file_path (str): path of the .xlsx file
+        '''
+
+        file_path = file_path if file_path else os.path.join(
+            os.getcwd(), f"{self.__uuid}.xlsx"
+        )
 
         # Creating the .xlsx
-        file: xlsxwriter.workbook = xlsxwriter.Workbook(excel_file)
+        file: xlsxwriter.workbook = xlsxwriter.Workbook(file_path)
         bold_format = file.add_format({"bold": True})
         date_format = file.add_format({'num_format': 'yyyy.mm.dd'})
         number_format = file.add_format({'num_format': '#,##0.00'})
 
         # Fetching the worksheet(s)
         worksheets: list = []
-        if type(self.content) != list:
-            worksheets.append(self.content)
+        if self.__is_list():
+            for sheet in self.sheets:
+                worksheets.append(sheet)
         else:
-            for element in self.content:
-                worksheets.append(element)
+            worksheets.append(self.sheets)
 
-        print(f"{file_name} is {str(len(worksheets))} worksheet(s):")
+        print(f"{file_path} is {str(len(worksheets))} worksheet{'s' if self.__is_list() else ''}:")
 
         # Creating the worksheet(s)
         for wsheet in worksheets:
@@ -110,17 +166,17 @@ class WorkBook:
                         if isinstance(element, date):
                             try:
                                 sheet.write_datetime(row, col, element, date_format)
-                            except:
+                            except Exception:
                                 pass
                         elif isinstance(element, Decimal):
                             try:
                                 sheet.write(row, col, element, number_format)
-                            except:
+                            except Exception:
                                 pass
                         else:
                             try:
                                 sheet.write(row, col, element)
-                            except:
+                            except Exception:
                                 pass
                         col += 1
                         last_col = (col if col > last_col else last_col)
@@ -136,6 +192,6 @@ class WorkBook:
         # Closing the .xlsx
         file.close()
 
-        print(f"xlsx created: {excel_file}")
+        print(f"xlsx created: {file_path}")
 
-        return excel_file
+        return file_path

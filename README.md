@@ -34,6 +34,8 @@ l.log("test")
 
 ## Writexcel
 
+tbd
+
 ## Install
 Via **pip**, with:
 ```
