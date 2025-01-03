@@ -9,11 +9,21 @@ import xlsxwriter
 class WorkSheet:
     '''Worksheet class'''
 
+    MIN_WIDTH: int = 10
+    MAX_WIDTH: int = 40
+
+    __slots__ = [
+        "name",
+        "header",
+        "data",
+        "header_comment"
+    ]
+
     def __init__(self,
         name: str,
-        header: list[str],
-        data: list[list[any]],
-        header_comment: list = None
+        header: list[str] = None,
+        data: list[list[any]] = None,
+        header_comment: list = None,
     ):
         '''
             Worksheet class
@@ -29,14 +39,15 @@ class WorkSheet:
         self.data: list[list] = data
         self.header_comment: list = header_comment if header_comment else []
 
+
     def __str__(self):
         return self.name
 
     # Seggesting a column width with min. and max. filter
     def suggest_width(self,
         col: int,
-        min_width: int = 10,
-        max_width: int = 40
+        min_width: int = MIN_WIDTH,
+        max_width: int = MAX_WIDTH
     ):
         '''
             Suggesting a column width with min. and max. filter
@@ -62,6 +73,13 @@ class WorkSheet:
 class WorkBook:
     '''Workbook class'''
 
+    __slots__ = [
+        "name",
+        "sheets",
+        "sheet_count",
+        "__uuid"
+    ]
+
     def __init__(self,
         name: str,
         sheets: list[WorkSheet]
@@ -78,12 +96,9 @@ class WorkBook:
         self.sheet_count: int = self.__get_sheet_count()
         self.__uuid: str = self.__gen_uuid()
 
-    def __str__(self):
-        return self.name
-    
     def __is_list(self) -> bool:
         '''return if the sheets is a list'''
-        return type(self.sheets) == list
+        return isinstance(self.sheets, list)
 
     def __get_sheet_count(self) -> int:
         '''return the number of sheets'''
@@ -116,10 +131,18 @@ class WorkBook:
         )
 
         # Creating the .xlsx
-        file: xlsxwriter.workbook = xlsxwriter.Workbook(file_path)
-        bold_format = file.add_format({"bold": True})
-        date_format = file.add_format({'num_format': 'yyyy.mm.dd'})
-        number_format = file.add_format({'num_format': '#,##0.00'})
+        file: xlsxwriter.workbook = xlsxwriter.Workbook(
+            filename = file_path
+        )
+        bold_format = file.add_format(
+            {"bold": True}
+        )
+        date_format = file.add_format(
+            {'num_format': 'yyyy.mm.dd'}
+        )
+        number_format = file.add_format(
+            {'num_format': '#,##0.00'}
+        )
 
         # Fetching the worksheet(s)
         worksheets: list = []
@@ -166,17 +189,17 @@ class WorkBook:
                         if isinstance(element, date):
                             try:
                                 sheet.write_datetime(row, col, element, date_format)
-                            except Exception:
+                            except Exception: # pylint: disable=broad-exception-caught
                                 pass
                         elif isinstance(element, Decimal):
                             try:
                                 sheet.write(row, col, element, number_format)
-                            except Exception:
+                            except Exception: # pylint: disable=broad-exception-caught
                                 pass
                         else:
                             try:
                                 sheet.write(row, col, element)
-                            except Exception:
+                            except Exception: # pylint: disable=broad-exception-caught
                                 pass
                         col += 1
                         last_col = (col if col > last_col else last_col)

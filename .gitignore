@@ -6,3 +6,4 @@ build/*
 *.sh
 test.py
 *.log
+*.xls*

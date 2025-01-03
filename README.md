@@ -1,43 +1,58 @@
-# Villog is a simple logger for your everyday projects
+# Villog is a simple python utility tool for your everyday projects.
 
-## Villog
-
-### Usage
-**script.py**
+## Logger
 ```
 from villog import Logger
 
-l = Logger()
+l: Logger = Logger(
+    file_path = "test.log",
+    encoding = "utf-8-sig",
+    time_format = "%Y.%m.%d %H:%M:%S",
+    separator = "\t",
+    silent = False,
+    enable_remove = False,
+    strip_content = False
+)
 
-l.log("test")
+l.log(
+    content = "test"
+)
 ```
-**log.txt**
-```
-2024.06.20 14:55:50|test
-```
-
-### Logger __init__
-- ```file_path```: (str) Path to the, by default it is **./log.txt**
-- ```encoding```: (str) Encoding of the file it logs to, by default it is **utf-8-sig**
-- ```time_format```: (str) Format of the strftime, by default it is **%Y.%m.%d %H:%M:%S**
-- ```separator```: (str) Separator between the time and the content, by default it is **" - "**
-
-### Logger functions
-- ```log()```: logs
-- ```change_path()```: changes the ```file_path```
-- ```change_encoding()```: changes the ```encoding```
-- ```change_time_format()```: changes the ```time_format```
-- ```change_separator()```: changes the ```separator```
-- ```read()```: returns the content of the log file
-- ```read_list()```: returns the content of the log file in a list line by line
-- ```clear()```: clears the log file
 
 ## Writexcel
+```
+from villog.writexcel import WorkSheet, WorkBook
 
-tbd
+sheet_1: WorkSheet = WorkSheet(
+    name = "Sheet1",
+    header = ["header_1", "header_2", "header_3"],
+    data = [
+        ["data_1", "data_2", "data_3"],
+        ["data_4", "data_5", "data_6"]
+    ]
+)
+
+sheet_2: WorkSheet = WorkSheet(
+    name = "Sheet2",
+    header = ["header_1", "header_2", "header_3"],
+    data = [
+        ["data_1", "data_2", "data_3"],
+        ["data_4", "data_5", "data_6"]
+    ]
+)
+
+book: WorkBook = WorkBook(
+    name = "Book1",
+    sheets = [sheet_1, sheet_2]
+)
+
+book.xlsx_create(
+    file_path = "test.xlsx"
+)
+```
 
 ## Install
-Via **pip**, with:
+With **pip**:
 ```
 pip install villog
 ```

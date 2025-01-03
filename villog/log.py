@@ -88,7 +88,7 @@ class Logger:
 
     def log(self,
         content: str = ""
-    ) -> str:
+    ) -> None:
         '''
             Logs content to file
 
@@ -99,7 +99,7 @@ class Logger:
 
     def change_path(self,
         file_path: str
-    ) -> str:
+    ) -> None:
         '''
             Changes the log file path
 
@@ -110,7 +110,7 @@ class Logger:
 
     def change_encoding(self,
         encoding: str
-    ) -> str:
+    ) -> None:
         '''
             Changes the log file encoding
 
@@ -121,7 +121,7 @@ class Logger:
 
     def change_time_format(self,
         time_format: str
-    ) -> str:
+    ) -> None:
         '''
             Changes the time format
 
@@ -132,7 +132,7 @@ class Logger:
 
     def change_separator(self,
         separator: str
-    ) -> str:
+    ) -> None:
         '''
             Changes the separator
 
@@ -151,34 +151,33 @@ class Logger:
 
     def __log(self,
         content: str = ""
-    ) -> str:
+    ) -> None:
         content = self.__str_time() + self.separator + str(self.__strip(content)) + "\n"
         if not self.__silent:
             print(content.strip())
         self.__log_to_file(content)
-        return content
 
     def __change_path(self,
         file_path: str
-    ) -> str:
+    ) -> None:
         self.file_path = file_path
         print(f"Changed path from {self.file_path} to {file_path}")
 
     def __change_encoding(self,
         encoding: str
-    ) -> str:
+    ) -> None:
         self.encoding = encoding
         print(f"Changed encoding to {encoding}")
 
     def __change_time_format(self,
         time_format: str
-    ) -> str:
+    ) -> None:
         self.time_format = time_format
         print(f"Changed time format to {time_format}")
 
     def __change_separator(self,
         separator: str
-    ) -> str:
+    ) -> None:
         self.separator = separator
         print(f"Changed separator to {separator}")
 
