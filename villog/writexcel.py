@@ -177,10 +177,10 @@ class WorkBook:
                                 sheet.write_comment(row, col, comment[1])
                     col += 1
                     last_col = (col if col > last_col else last_col)
+                row += 1
 
             # If available, then creating the data
             if wsheet.data:
-                row += 1
                 last_row = (row if row > last_row else last_row)
                 for line in wsheet.data:
                     col = 0
