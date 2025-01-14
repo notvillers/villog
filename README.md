@@ -1,6 +1,7 @@
 # Villog is a simple python utility tool for your everyday projects.
 
-## Logger
+## Modules
+### Logger
 ```
 from villog import Logger
 
@@ -19,7 +20,7 @@ l.log(
 )
 ```
 
-## Writexcel
+### Writexcel
 ```
 from villog.writexcel import WorkSheet, WorkBook
 
@@ -50,6 +51,12 @@ book.xlsx_create(
     file_path = "test.xlsx"
 )
 ```
+
+### MsSQL
+tba
+
+### pdf
+tba
 
 ## Install
 With **pip**:

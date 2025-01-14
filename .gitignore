@@ -1,5 +1,5 @@
 venv/*
-*.txt
+*.pyc
 villog.egg-info/*
 dist/*
 build/*
@@ -7,3 +7,6 @@ build/*
 test.py
 *.log
 *.xls*
+*.css
+*.html
+*.pdf
