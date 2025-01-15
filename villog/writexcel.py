@@ -34,7 +34,7 @@ class WorkSheet:
                 data (list[list[any]]): data of the worksheet
                 header_comment (list[str, str]): comment for the header
         '''
-        self.name: str = name
+        self.name: str = name if len(name) < 32 else name[:31]
         self.header: list[str] = header
         self.data: list[list] = data
         self.header_comment: list = header_comment if header_comment else []
@@ -68,6 +68,27 @@ class WorkSheet:
                     length: int = len(str(row[col]))
 
         return (length if length < max_width else max_width)
+    
+    def set_min_width(self,
+                      min_width: int
+                      ) -> None:
+        '''
+            Setting the minimum width
+        
+            Parameters:
+                min_width (int): minimum width
+        '''
+        self.MIN_WIDTH = min_width
+
+    def set_max_width(self,
+                      max_width: int) -> None:
+        '''
+            Setting the maximum width
+        
+            Parameters:
+                max_width (int): maximum width
+        '''
+        self.MAX_WIDTH = max_width
 
 
 class WorkBook:
