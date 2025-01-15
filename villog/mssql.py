@@ -16,7 +16,7 @@ class VillSqlException(Exception):
     '''
 
 
-class _MsSQLClient:
+class MsSQLClient:
     '''
         MsSQL client class
     '''
@@ -316,7 +316,7 @@ class Table:
                                     data = self.rows)).xlsx_create(file_path = path)
 
 
-class MssqlClient:
+class villSQL:
     '''
         Octopus 8 class
     '''
@@ -330,7 +330,7 @@ class MssqlClient:
                  do_logs: bool = True,
                  logger: Logger | None = None,
                  row_limit: int | None = None,
-                 do_table_fetch: bool = True,
+                 do_table_fetch: bool = False,
                  allow_execute: bool = False) -> None:
         '''
             Octopus 8 class
@@ -357,7 +357,7 @@ class MssqlClient:
                 )
             else:
                 self.__logger: Logger = logger
-        self.__client: _MsSQLClient = _MsSQLClient(server = self.__set_server_value(login_data,
+        self.__client: MsSQLClient = MsSQLClient(server = self.__set_server_value(login_data,
                                                                                   server,
                                                                                   "server"),
                                                  database = self.__set_server_value(login_data,
@@ -370,7 +370,8 @@ class MssqlClient:
                                                                                     password,
                                                                                     "password"),
                                                  is_trusted = is_server_trusted,
-                                                 logger = self.__logger)
+                                                 logger = self.__logger,
+                                                 allow_execute = allow_execute)
         self.__row_limit: int | None = row_limit
         self.__tables: list[str] = self.__get_tables()
 
@@ -460,6 +461,7 @@ class MssqlClient:
         '''
             Get tables from database
         '''
+        print("Getting tables")
         _, results = self.__client.select("select name from sys.tables")
         tables = [result[0] for result in results]
         if not tables:
