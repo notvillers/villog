@@ -68,7 +68,7 @@ class WorkSheet:
                     length: int = len(str(row[col]))
 
         return (length if length < max_width else max_width)
-    
+
     def set_min_width(self,
                       min_width: int
                       ) -> None:
