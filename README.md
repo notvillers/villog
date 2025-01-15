@@ -4,7 +4,7 @@
 - Logger
 - Excel generator
 - Excel reader
-- MMSQL handler
+- MSSQL handler
 - PDF generator
 
 ### Logger
