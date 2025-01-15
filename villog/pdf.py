@@ -12,6 +12,7 @@ def generate(html_string: str,
 
         Parameters:
             html_path (str): HTML string.
+            output_path (str): Output path.
             css_path (str): CSS string.
     '''
     HTML(string = html_string).write_pdf(output_path,

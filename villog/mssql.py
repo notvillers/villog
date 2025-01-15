@@ -316,7 +316,7 @@ class Table:
                                     data = self.rows)).xlsx_create(file_path = path)
 
 
-class villSQL:
+class VillSQL:
     '''
         Octopus 8 class
     '''
