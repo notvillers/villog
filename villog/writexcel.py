@@ -1,4 +1,6 @@
-'''Writing .xlsx files'''
+'''
+    Excel writer module
+'''
 
 import os
 from datetime import date
@@ -7,7 +9,9 @@ import uuid
 import xlsxwriter
 
 class WorkSheet:
-    '''Worksheet class'''
+    '''
+        Worksheet class
+    '''
 
     MIN_WIDTH: int = 10
     MAX_WIDTH: int = 40
@@ -20,11 +24,10 @@ class WorkSheet:
     ]
 
     def __init__(self,
-        name: str,
-        header: list[str] = None,
-        data: list[list[any]] = None,
-        header_comment: list = None,
-    ):
+                 name: str,
+                 header: list[str] = None,
+                 data: list[list[any]] = None,
+                 header_comment: list = None) -> None:
         '''
             Worksheet class
 
@@ -39,16 +42,11 @@ class WorkSheet:
         self.data: list[list] = data
         self.header_comment: list = header_comment if header_comment else []
 
-
-    def __str__(self):
-        return self.name
-
     # Seggesting a column width with min. and max. filter
     def suggest_width(self,
-        col: int,
-        min_width: int = MIN_WIDTH,
-        max_width: int = MAX_WIDTH
-    ):
+                      col: int,
+                      min_width: int = MIN_WIDTH,
+                      max_width: int = MAX_WIDTH) -> None:
         '''
             Suggesting a column width with min. and max. filter
         
@@ -70,8 +68,7 @@ class WorkSheet:
         return (length if length < max_width else max_width)
 
     def set_min_width(self,
-                      min_width: int
-                      ) -> None:
+                      min_width: int) -> None:
         '''
             Setting the minimum width
         
@@ -102,9 +99,8 @@ class WorkBook:
     ]
 
     def __init__(self,
-        name: str,
-        sheets: list[WorkSheet]
-    ):
+                 name: str,
+                 sheets: list[WorkSheet]) -> None:
         '''
             Workbook class
 
@@ -118,16 +114,19 @@ class WorkBook:
         self.__uuid: str = self.__gen_uuid()
 
     def __is_list(self) -> bool:
-        '''return if the sheets is a list'''
+        '''
+            Return if the sheets is a list
+        '''
         return isinstance(self.sheets, list)
 
     def __get_sheet_count(self) -> int:
-        '''return the number of sheets'''
+        '''
+            Return the number of sheets
+        '''
         return 1 if not self.__is_list() else len(self.sheets)
 
     def __gen_uuid(self,
-        length: int = 8
-    ) -> str:
+                   length: int = 8) -> str:
         '''
             Generating a random UUID
             
@@ -138,8 +137,7 @@ class WorkBook:
 
     # Creating the .xlsx
     def xlsx_create(self,
-        file_path: str = None
-    ) -> str:
+                    file_path: str = None) -> str:
         '''
             Creating the .xlsx
 
@@ -147,23 +145,14 @@ class WorkBook:
                 file_path (str): path of the .xlsx file
         '''
 
-        file_path = file_path if file_path else os.path.join(
-            os.getcwd(), f"{self.__uuid}.xlsx"
-        )
+        file_path = file_path or os.path.join(os.getcwd(),
+                                              f"{self.__uuid}.xlsx")
 
         # Creating the .xlsx
-        file: xlsxwriter.workbook = xlsxwriter.Workbook(
-            filename = file_path
-        )
-        bold_format = file.add_format(
-            {"bold": True}
-        )
-        date_format = file.add_format(
-            {'num_format': 'yyyy.mm.dd'}
-        )
-        number_format = file.add_format(
-            {'num_format': '#,##0.00'}
-        )
+        file: xlsxwriter.workbook = xlsxwriter.Workbook(filename = file_path)
+        bold_format = file.add_format({"bold": True})
+        date_format = file.add_format({'num_format': 'yyyy.mm.dd'})
+        number_format = file.add_format({'num_format': '#,##0.00'})
 
         # Fetching the worksheet(s)
         worksheets: list = []
