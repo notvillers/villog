@@ -350,13 +350,8 @@ class VillSQL:
         '''
         self.__do_logs: bool = do_logs
         if do_logs:
-            if not logger:
-                self.__logger: Logger = Logger(
-                    file_path = os.path.join(os.getcwd(),
-                                             "octopus.log"),
-                )
-            else:
-                self.__logger: Logger = logger
+            self.__logger: Logger = logger or Logger(file_path = os.path.join(os.getcwd(),
+                                                                              "octopus.log"))
         self.__client: MsSQLClient = MsSQLClient(server = self.__set_server_value(login_data,
                                                                                   server,
                                                                                   "server"),
@@ -394,7 +389,7 @@ class VillSQL:
         return str(self.__client)
 
     def __log(self,
-              content: str ) -> None:
+              content: str) -> None:
         '''
             Log content
         
