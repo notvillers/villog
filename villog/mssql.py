@@ -7,7 +7,7 @@ import platform
 from time import sleep
 from ping3 import ping
 import pyodbc
-from villog import Logger
+from villog.log import Logger
 from villog.writexcel import WorkSheet, WorkBook
 
 class VillSqlException(Exception):

@@ -1,23 +1,20 @@
 # Villog is a simple python utility tool for your everyday projects.
 
+Can be installed with [pip](https://pypi.org/project/villog/).
+
 ## Modules
 - Logger
 - Excel generator
 - Excel reader
 - MSSQL handler
 - PDF generator
+- Mail sender
 
 ### Logger
 ```
-from villog import Logger
+from villog.log import Logger
 
-l: Logger = Logger(file_path = "example.log",
-                   encoding = "utf-8-sig",
-                   time_format = "%Y.%m.%d %H:%M:%S",
-                   separator = "\t",
-                   silent = False,
-                   enable_remove = False,
-                   strip_content = True)
+l: Logger = Logger(file_path = "example.log")
 
 l.log(content = "example_content")
 ```
@@ -44,7 +41,7 @@ book.xlsx_create(file_path = "example.xlsx")
 
 ### Read Excel
 ```
-from villog import ReadExcel
+from villog.readexcel import ReadExcel
 
 excel: ReadExcel = ReadExcel(path = "example.xlsx")
 
@@ -68,12 +65,12 @@ login_dict: dict[str, str] = {"server": "server_name",
 
 sql_client: VillSQL = VillSQL(login_data = login_dict)
 
-egt: Table = sql_client.get_table("EXAMPLE_T",
+egt: Table = sql_client.get_table("EXAMPLE_TABLE",
                                   raw_filter="col_1 = "example",
                                   order_by = ["col_1","ASC",
                                               "col_3","DESC"],
-                                              # kwargs:
-                                              COL_4 = 1)
+                                  # kwargs:
+                                  COL_4 = 1)
 
 egt.set_filter(column_names = ["col_1, "col_2"])
 
@@ -100,9 +97,30 @@ villsql_client.close()
 
 ### PDF generator
 ```
-from villog import generate_pdf
+from villog.pdf import generate as generate_pdf
 
 generate_pdf(html_string = "html_string",
              output_path = "example.pdf",
              css_string = "css_string")
+```
+
+### Mail man
+```
+from villog.mail_man import MailMan
+
+mail: MailMan = MailMan(
+    smtp_server="smtp.example.com",
+    smtp_login="example@example.com",
+    smtp_port=465,
+    smtp_password="example_password",
+    name="Example Name"
+)
+
+mail.send(
+    subject = "Example subject",
+    body = "Example body",
+    send_to = ["example_1@example.com", "example_2@example.com"],
+    files = ["example.xlsx"],
+    images = None
+)
 ```

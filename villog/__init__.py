@@ -1,7 +1,8 @@
 '''A simple logger'''
 
-from villog.log import Logger
+from villog import log
 from villog import writexcel
+from villog import readexcel
 from villog import mssql
-from villog.pdf import generate as generate_pdf
-from villog.readexcel import ReadExcel
+from villog import pdf
+from villog import mail_man
