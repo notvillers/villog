@@ -8,6 +8,26 @@ from decimal import Decimal
 import uuid
 import xlsxwriter
 
+def gen_uuid(length: int = 8) -> str:
+    '''
+        Generating a random UUID
+        
+        Parameters:
+            length (int): length of the UUID
+    '''
+    return str(uuid.uuid4())[:length]
+
+
+def is_list(obj: any) -> bool:
+    '''
+        Return if the object is a list
+        
+        Parameters:
+            obj (any): object
+    '''
+    return isinstance(obj, list)
+
+
 class WorkSheet:
     '''
         Worksheet class
@@ -16,12 +36,10 @@ class WorkSheet:
     MIN_WIDTH: int = 10
     MAX_WIDTH: int = 40
 
-    __slots__ = [
-        "name",
-        "header",
-        "data",
-        "header_comment"
-    ]
+    __slots__ = ["name",
+                 "header",
+                 "data",
+                 "header_comment"]
 
     def __init__(self,
                  name: str,
@@ -91,12 +109,11 @@ class WorkSheet:
 class WorkBook:
     '''Workbook class'''
 
-    __slots__ = [
-        "name",
-        "sheets",
-        "sheet_count",
-        "__uuid"
-    ]
+    __slots__ = ["name",
+                 "sheets",
+                 "__is_list",
+                 "sheet_count",
+                 "__uuid"]
 
     def __init__(self,
                  name: str,
@@ -110,30 +127,15 @@ class WorkBook:
         '''
         self.name: str = name
         self.sheets: list[WorkSheet] = sheets
+        self.__is_list: bool = is_list(sheets)
         self.sheet_count: int = self.__get_sheet_count()
-        self.__uuid: str = self.__gen_uuid()
-
-    def __is_list(self) -> bool:
-        '''
-            Return if the sheets is a list
-        '''
-        return isinstance(self.sheets, list)
+        self.__uuid: str = gen_uuid()
 
     def __get_sheet_count(self) -> int:
         '''
             Return the number of sheets
         '''
-        return 1 if not self.__is_list() else len(self.sheets)
-
-    def __gen_uuid(self,
-                   length: int = 8) -> str:
-        '''
-            Generating a random UUID
-            
-            Parameters:
-                length (int): length of the UUID
-        '''
-        return str(uuid.uuid4())[:length]
+        return 1 if not self.__is_list else len(self.sheets)
 
     # Creating the .xlsx
     def xlsx_create(self,
@@ -149,20 +151,20 @@ class WorkBook:
                                               f"{self.__uuid}.xlsx")
 
         # Creating the .xlsx
-        file: xlsxwriter.workbook = xlsxwriter.Workbook(filename = file_path)
+        file: xlsxwriter.Workbook = xlsxwriter.Workbook(filename = file_path)
         bold_format = file.add_format({"bold": True})
         date_format = file.add_format({'num_format': 'yyyy.mm.dd'})
         number_format = file.add_format({'num_format': '#,##0.00'})
 
         # Fetching the worksheet(s)
         worksheets: list = []
-        if self.__is_list():
+        if self.__is_list:
             for sheet in self.sheets:
                 worksheets.append(sheet)
         else:
             worksheets.append(self.sheets)
 
-        print(f"{file_path} is {str(len(worksheets))} worksheet{'s' if self.__is_list() else ''}:")
+        print(f"{file_path} is {str(len(worksheets))} worksheet{'s' if self.__is_list else ''}:")
 
         # Creating the worksheet(s)
         for wsheet in worksheets:
