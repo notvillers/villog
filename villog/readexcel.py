@@ -3,6 +3,7 @@
 '''
 
 import pandas
+import numpy
 
 class ReadExcel:
     '''
@@ -54,4 +55,5 @@ class ReadExcel:
                 sheet_name (str): Name of the sheet
         '''
         return pandas.read_excel(self.path,
-                                 sheet_name).values.tolist()
+                                 sheet_name,
+                                 header = None).replace({numpy.nan: None}).values.tolist()
