@@ -21,16 +21,16 @@ class MsSQLClient:
         MsSQL client class
     '''
 
-    __slots__ = ["server",
-                 "database",
-                 "username",
-                 "password",
-                 "allow_execute",
-                 "logger",
-                 "driver",
-                 "connection",
-                 "cursor"]
-    
+    __slots__: list[str] = ["server",
+                            "database",
+                            "username",
+                            "password",
+                            "allow_execute",
+                            "logger",
+                            "driver",
+                            "connection",
+                            "cursor"]
+
     def __init__(self,
                  server: str,
                  database: str,
@@ -38,8 +38,7 @@ class MsSQLClient:
                  password: str,
                  is_trusted: bool = True,
                  allow_execute: bool = False,
-                 logger: Logger|None = None,
-    ) -> None:
+                 logger: Logger | None = None) -> None:
         '''
             MsSQL client class
 
@@ -91,7 +90,7 @@ class MsSQLClient:
             Check if the OS is Mac
         '''
         return 'darwin' in platform.system().lower()
-        
+
     def __is_arm(self) -> str:
         '''
             Check if the CPU is ARM
@@ -320,6 +319,14 @@ class VillSQL:
     '''
         Octopus 8 class
     '''
+
+    __slots__: list[str] = ["__do_logs",
+                            "__logger",
+                            "__client",
+                            "__row_limit",
+                            "__tables",
+                            "__allow_execute"]
+
     def __init__(self,
                  login_data: dict | None = None,
                  server: str | None = None,
@@ -365,7 +372,7 @@ class VillSQL:
                                                                                     password,
                                                                                     "password"),
                                                  is_trusted = is_server_trusted,
-                                                 logger = self.__logger,
+                                                 logger = logger,
                                                  allow_execute = allow_execute)
         self.__row_limit: int | None = row_limit
         self.__tables: list[str] = self.__get_tables()
@@ -589,8 +596,8 @@ class VillSQL:
         return result
 
     def execute(self,
-                  query: str,
-                  insert: list | None = None) -> None:
+                query: str,
+                insert: list | None = None) -> None:
         '''
             Execute a query
 
