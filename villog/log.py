@@ -72,7 +72,7 @@ class Logger:
 
     def __log_to_file(self, content: str) -> None:
         '''Appends file'''
-        with open(self.file_path, "a", encoding = self.encoding) as file:
+        with open(self.file_path, "a+", encoding = self.encoding) as file:
             file.write(content)
 
     def __strip(self,
