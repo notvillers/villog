@@ -24,7 +24,7 @@ class MailMan:
                  smtp_password: str,
                  name: str,
                  do_logs: bool = True,
-                 logger: Logger = None) -> None:
+                 logger: Logger | None = None) -> None:
         '''
             SMTP client class
 
@@ -43,7 +43,7 @@ class MailMan:
         self.smtp_password: str = smtp_password
         self.name: str = name
         self.do_logs: bool = do_logs
-        self.logger: Logger = logger if logger or do_logs else (Logger() if do_logs else None)
+        self.logger: Logger | None = logger if logger or do_logs else (Logger() if do_logs else None) # pylint: disable=line-too-long
 
     def __str__(self) -> str:
         return f"{self.smtp_login}@{self.smtp_server}:{self.smtp_port}"
@@ -62,7 +62,16 @@ class MailMan:
              send_to: list[str],
              files: list[str] | None = None,
              images: list[str] | None = None) -> None:
-        '''Send e-mail'''
+        '''
+            Send e-mail
+
+            Args:
+                subject (str): Subject
+                body (str): Body
+                send_to (list[str]): Send to e-mail addresses
+                files (list[str]): Files path
+                images (list[str]): Images path
+        '''
         self.__log(f"Sending mail {subject}")
         assert isinstance(send_to, list)
         msg: MIMEMultipart = MIMEMultipart()

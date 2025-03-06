@@ -9,8 +9,9 @@ class ReadExcel:
     '''
         Excel reader class
     '''
-    __slots__ = ["path",
-                 "data"]
+    __slots__: list[str] = ["path",
+                            "data"]
+
     def __init__(self,
                  path: str,
                  read_on_init: bool = False) -> None:

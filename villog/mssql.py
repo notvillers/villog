@@ -53,7 +53,7 @@ class MsSQLClient:
         self.server: str = server
         self.database: str = database
         self.allow_execute: bool = allow_execute
-        self.logger: Logger = logger
+        self.logger: Logger | None = logger
         self.driver: str = self.__get_driver()
         if not self.driver:
             raise VillSqlException("No ODBC driver found")
@@ -65,8 +65,8 @@ class MsSQLClient:
                                                                 is_trusted)
             self.cursor: pyodbc.Connection.cursor = self.connection.cursor() # pylint: disable=c-extension-no-member
         except Exception as error:
-            if self.__is_mac_os() and self.__is_arm():
-                raise VillSqlException("If you got a pyodbc error, install it with 'pip install --no-binary :all: pyodbc'") from error # pylint: disable=line-too-long
+            if self.__is_mac_arm():
+                raise VillSqlException("If you got a pyodbc error and using a MacOS with ARM cpu, then try to install it with 'pip install --no-binary :all: pyodbc'") from error # pylint: disable=line-too-long
             raise error
 
     def __str__(self) -> str:
@@ -85,17 +85,23 @@ class MsSQLClient:
         else:
             print(content)
 
-    def __is_mac_os(self) -> str:
+    def __is_mac_os(self) -> bool:
         '''
             Check if the OS is Mac
         '''
         return 'darwin' in platform.system().lower()
 
-    def __is_arm(self) -> str:
+    def __is_arm(self) -> bool:
         '''
             Check if the CPU is ARM
         '''
         return 'arm' in platform.machine().lower()
+
+    def __is_mac_arm(self) -> bool:
+        '''
+            Check if the OS is Mac and the CPU is ARM
+        '''
+        return self.__is_mac_os() and self.__is_arm()
 
     def __ping(self,
                attempt: int = 5,
@@ -129,7 +135,9 @@ class MsSQLClient:
         drivers: list[str] = pyodbc.drivers() # pylint: disable=c-extension-no-member
         for driver in drivers:
             if driver.startswith("ODBC Driver ") and driver.endswith(" for SQL Server"):
-                return driver.replace("ODBC Driver ", "").replace(" for SQL Server", "")
+                return driver.replace("ODBC Driver ",
+                                      "").replace(" for SQL Server",
+                                                  "")
         if drivers:
             return drivers[0]
         return None
@@ -167,8 +175,8 @@ class MsSQLClient:
         self.__log(f"Connection to {self.server} closed")
 
     def execute(self,
-                  query: str,
-                  insert: list | None = None) -> None:
+                query: str,
+                insert: list | None = None) -> None:
         '''
             Execute query
 
@@ -215,7 +223,8 @@ class MsSQLClient:
                 query (str): Query
                 insert (list, optional): Insert values. Defaults to None.
         '''
-        _, result = self.select(query, insert)
+        _, result = self.select(query,
+                                insert)
         return result[0][0] if result else None
 
 class Table:
@@ -275,8 +284,10 @@ class Table:
             Args:
                 column_names (list[str]): Column names
         '''
-        if not isinstance(column_names, list):
-            if isinstance(column_names, str):
+        if not isinstance(column_names,
+                          list):
+            if isinstance(column_names,
+                          str):
                 raise VillSqlException("For single column use 'return_column'")
             raise VillSqlException("Column names must be a list")
         new_rows: list[list] = []
@@ -290,7 +301,7 @@ class Table:
         return new_rows
 
     def set_filter(self,
-                    column_names: list[str]) -> None:
+                   column_names: list[str]) -> None:
         '''
             Filter table by column names
 
@@ -387,9 +398,9 @@ class VillSQL:
                             order_by = None,
                             **kfilter:
                             self.get_table(table,
-                                             raw_filter,
-                                             order_by,
-                                             **kfilter))
+                                           raw_filter,
+                                           order_by,
+                                           **kfilter))
         self.__allow_execute: bool = allow_execute
 
     def __str__(self) -> str:
@@ -503,10 +514,10 @@ class VillSQL:
             return f"{kfilter_item[0]} = {kfilter_item[1]}"
 
     def get_table(self,
-                    table: str,
-                    raw_filter: str = "",
-                    order_by: list[tuple]|None = None,
-                    **kfilter) -> Table:
+                  table: str,
+                  raw_filter: str = "",
+                  order_by: list[tuple] | None = None,
+                  **kfilter) -> Table:
         '''
             Selects a table from the database and returns it as a Table object
 
@@ -529,7 +540,7 @@ class VillSQL:
             if order_by:
                 query += " order by "
                 for i, order in enumerate(order_by):
-                    query += f"{order[0]} {order[1]}{'' if len(order_by)-1 == i else ', '} "
+                    query += f"{order[0]} {order[1]}{'' if len(order_by) - 1 == i else ', '} "
             self.__log(f"Executing: {(query)}")
             columns, result = self.__client.select(query)
             if result:

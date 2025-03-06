@@ -36,10 +36,10 @@ class WorkSheet:
     MIN_WIDTH: int = 10
     MAX_WIDTH: int = 40
 
-    __slots__ = ["name",
-                 "header",
-                 "data",
-                 "header_comment"]
+    __slots__: list[str] = ["name",
+                            "header",
+                            "data",
+                            "header_comment"]
 
     def __init__(self,
                  name: str,
@@ -109,11 +109,11 @@ class WorkSheet:
 class WorkBook:
     '''Workbook class'''
 
-    __slots__ = ["name",
-                 "sheets",
-                 "__is_list",
-                 "sheet_count",
-                 "__uuid"]
+    __slots__: list[str] = ["name",
+                            "sheets",
+                            "__is_list",
+                            "sheet_count",
+                            "__uuid"]
 
     def __init__(self,
                  name: str,
