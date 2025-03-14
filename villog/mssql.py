@@ -5,6 +5,7 @@
 import os
 import platform
 from time import sleep
+from dataclasses import dataclass
 from ping3 import ping
 import pyodbc
 from villog.log import Logger
@@ -14,6 +15,33 @@ class VillSqlException(Exception):
     '''
         Exception for Octopus 8 python module'
     '''
+    def __init__(self,
+                    message: str) -> None:
+        '''
+            Exception for Octopus 8 python module'
+
+            Args:
+                message (str): Message
+        '''
+        super().__init__(message)
+
+
+@dataclass
+class SQLConfig:
+    '''
+        VillSQL configuration class
+        Helps to store SQL configuration
+
+        Args:
+            server (str): Server name
+            database (str): Database name
+            username (str): Username
+            password (str): Password
+    '''
+    server: str
+    database: str
+    username: str
+    password: str
 
 
 class MsSQLClient:
@@ -69,8 +97,10 @@ class MsSQLClient:
                 raise VillSqlException("If you got a pyodbc error and using a MacOS with ARM cpu, then try to install it with 'pip install --no-binary :all: pyodbc'") from error # pylint: disable=line-too-long
             raise error
 
+
     def __str__(self) -> str:
         return f"{self.database}@{self.server}"
+
 
     def __log(self,
               content: str) -> None:
@@ -85,11 +115,13 @@ class MsSQLClient:
         else:
             print(content)
 
+
     def __is_mac_os(self) -> bool:
         '''
             Check if the OS is Mac
         '''
         return 'darwin' in platform.system().lower()
+
 
     def __is_arm(self) -> bool:
         '''
@@ -97,11 +129,13 @@ class MsSQLClient:
         '''
         return 'arm' in platform.machine().lower()
 
+
     def __is_mac_arm(self) -> bool:
         '''
             Check if the OS is Mac and the CPU is ARM
         '''
         return self.__is_mac_os() and self.__is_arm()
+
 
     def __ping(self,
                attempt: int = 5,
@@ -128,6 +162,7 @@ class MsSQLClient:
         self.__log(f"Can't reach {self.server}, no more attempts")
         return False
 
+
     def __get_driver(self) -> str | None:
         '''
             Get ODBC driver
@@ -141,6 +176,7 @@ class MsSQLClient:
         if drivers:
             return drivers[0]
         return None
+
 
     def __connect(self,
                   username: str,
@@ -166,6 +202,7 @@ class MsSQLClient:
         self.__log(f"Connected to {self.database}@{self.server}")
         return connection
 
+
     def close(self) -> None:
         '''
             Close connection
@@ -173,6 +210,7 @@ class MsSQLClient:
         self.cursor.close()
         self.connection.close()
         self.__log(f"Connection to {self.server} closed")
+
 
     def execute(self,
                 query: str,
@@ -194,6 +232,7 @@ class MsSQLClient:
         else:
             raise VillSqlException("Execution is not allowed, set 'allow_execute' to True")
 
+
     def select(self,
                query: str,
                insert: list | None = None) -> tuple|None:
@@ -212,6 +251,7 @@ class MsSQLClient:
         columns = [description[0] for description in self.cursor.description]
         return columns, result
 
+
     def one_value_select(self,
                          query: str,
                          insert: list | None = None) -> any:
@@ -226,6 +266,7 @@ class MsSQLClient:
         _, result = self.select(query,
                                 insert)
         return result[0][0] if result else None
+
 
 class Table:
     '''
@@ -248,6 +289,7 @@ class Table:
         self.columns: list = columns
         self.rows: list[list] = rows
 
+
     def __column_index(self,
                        column_name: str) -> int | None:
         '''
@@ -260,6 +302,7 @@ class Table:
             if column.lower() == column_name.lower():
                 return index
         return None
+
 
     def return_column(self,
                       column_name: str) -> list[str] | None:
@@ -275,6 +318,7 @@ class Table:
         if column_index is not None:
             return [row[column_index] for row in self.rows]
         return None
+
 
     def return_columns(self,
                        column_names: list[str]) -> list[list] | None:
@@ -300,6 +344,7 @@ class Table:
             new_rows.append(new_row)
         return new_rows
 
+
     def set_filter(self,
                    column_names: list[str]) -> None:
         '''
@@ -310,6 +355,7 @@ class Table:
         '''
         self.rows = self.return_columns(column_names)
         self.columns = column_names
+
 
     def export_to_excel(self,
                         path: str) -> str:
@@ -339,6 +385,7 @@ class VillSQL:
                             "__allow_execute"]
 
     def __init__(self,
+                 sql_config: SQLConfig | None = None,
                  login_data: dict | None = None,
                  server: str | None = None,
                  database: str | None = None,
@@ -354,6 +401,7 @@ class VillSQL:
             Octopus 8 class
 
             Args:
+                sql_config (SQLConfig, optional): SQL configuration. Defaults to None.
                 login_data (dict, optional): Login data. Defaults to None.
                 server (str, optional): Server name. Defaults to None.
                 database (str, optional): Database name. Defaults to None.
@@ -370,18 +418,22 @@ class VillSQL:
         if do_logs:
             self.__logger: Logger = logger or Logger(file_path = os.path.join(os.getcwd(),
                                                                               "octopus.log"))
-        self.__client: MsSQLClient = MsSQLClient(server = self.__set_server_value(login_data,
-                                                                                  server,
-                                                                                  "server"),
-                                                 database = self.__set_server_value(login_data,
-                                                                                    database,
-                                                                                    "database"),
-                                                 username = self.__set_server_value(login_data,
-                                                                                    username,
-                                                                                    "username"),
-                                                 password = self.__set_server_value(login_data,
-                                                                                    password,
-                                                                                    "password"),
+        server_c: str = sql_config.server if sql_config else self.__set_server_value(login_data,
+                                                                                     server,
+                                                                                     "server")
+        database_c: str = sql_config.database if sql_config else self.__set_server_value(login_data,
+                                                                                         database,
+                                                                                         "database")
+        username_c: str = sql_config.username if sql_config else self.__set_server_value(login_data,
+                                                                                         username,
+                                                                                         "username")
+        password_c: str = sql_config.password if sql_config else self.__set_server_value(login_data,
+                                                                                         password,
+                                                                                         "password")
+        self.__client: MsSQLClient = MsSQLClient(server = server_c,
+                                                 database = database_c,
+                                                 username = username_c,
+                                                 password = password_c,
                                                  is_trusted = is_server_trusted,
                                                  logger = logger,
                                                  allow_execute = allow_execute)
@@ -403,8 +455,10 @@ class VillSQL:
                                            **kfilter))
         self.__allow_execute: bool = allow_execute
 
+
     def __str__(self) -> str:
         return str(self.__client)
+
 
     def __log(self,
               content: str) -> None:
@@ -419,6 +473,7 @@ class VillSQL:
         else:
             print(content)
 
+
     def __check_key(self,
                     dictionary: dict,
                     key: str) -> bool:
@@ -432,6 +487,7 @@ class VillSQL:
         if key in dictionary:
             return True
         return False
+
 
     def __set_server_value(self,
                            login_data: dict,
@@ -452,6 +508,7 @@ class VillSQL:
             return value
         raise VillSqlException(f"No '{key}' found")
 
+
     def __get_row_limit(self) -> str:
         '''
             Get row limit for query
@@ -459,6 +516,7 @@ class VillSQL:
         if self.__row_limit and self.__row_limit > 0:
             return f" top {str(self.__row_limit)}"
         return ""
+
 
     def set_row_limit(self,
                       row_limit: int) -> None:
@@ -470,6 +528,7 @@ class VillSQL:
         '''
         self.__row_limit = row_limit
 
+
     def __get_tables(self) -> list[str]:
         '''
             Get tables from database
@@ -480,6 +539,7 @@ class VillSQL:
         if not tables:
             raise VillSqlException("No tables found")
         return tables
+
 
     def __is_table(self,
                    table: str) -> bool:
@@ -496,22 +556,26 @@ class VillSQL:
         self.__log(f"Table '{table}' not found")
         return False
 
+
     def __kfilter_to_query(self,
-            kfilter_item: list) -> str:
+                           kfilter_item: list) -> str:
         '''
             Convert kwargs filter to query
         
             Args:
                 kfilter_item (list): Kwargs filter item
         '''
-        if isinstance(kfilter_item[1], str):
+        if isinstance(kfilter_item[1],
+                      str):
             if kfilter_item[1].lower() in ("null", "is null"):
                 return f"{kfilter_item[0]} is null"
             if kfilter_item[1].lower() in ("not null", "is not null"):
                 return f"{kfilter_item[0]} is not null"
             return f"{kfilter_item[0]} = '{kfilter_item[1]}'"
-        if isinstance(kfilter_item[1], int):
+        if isinstance(kfilter_item[1],
+                      int):
             return f"{kfilter_item[0]} = {kfilter_item[1]}"
+
 
     def get_table(self,
                   table: str,
@@ -547,6 +611,7 @@ class VillSQL:
                 return Table(columns, result)
         return None
 
+
     def custom_query(self,
                      query: str,
                      inserter: list[any] | None = None) -> tuple | None:
@@ -561,6 +626,7 @@ class VillSQL:
             return self.__client.select(query,
                                         inserter)
         raise VillSqlException("Custom query is only allowed if 'allow_execute' is set to True")
+
 
     def custom_query_to_table(self,
                               query: str,
@@ -578,6 +644,7 @@ class VillSQL:
             return Table(columns, result)
         return None
 
+
     def custom_query_only_columns(self,
                                   query: str,
                                   inserter: list[any] | None = None) -> list[str] | None:
@@ -592,6 +659,7 @@ class VillSQL:
                                           inserter)
         return columns
 
+
     def custom_query_only_values(self,
                                  query: str,
                                  inserter: list[any] | None = None) -> list[list] | None:
@@ -605,6 +673,7 @@ class VillSQL:
         _, result = self.__client.select(query,
                                          inserter)
         return result
+
 
     def execute(self,
                 query: str,
@@ -621,6 +690,7 @@ class VillSQL:
                                   insert)
         else:
             raise VillSqlException("Execution is not allowed, set 'allow_execute' to True")
+
 
     def __read_file(self,
                     path: str,
@@ -639,6 +709,7 @@ class VillSQL:
                   encoding = encoding) as file:
             return file.read()
 
+
     def execute_file(self,
                      path: str,
                      encoding: str = "utf-8-sig") -> None:
@@ -652,6 +723,7 @@ class VillSQL:
         return self.custom_query(self.__read_file(path,
                                                   encoding))
 
+
     def execute_file_to_table(self,
                               path: str,
                               encoding: str = "utf-8-sig") -> Table:
@@ -664,6 +736,7 @@ class VillSQL:
         '''
         return self.custom_query_to_table(self.__read_file(path,
                                                            encoding))
+
 
     def close(self) -> None:
         '''
