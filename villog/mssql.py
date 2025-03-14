@@ -386,7 +386,6 @@ class VillSQL:
 
     def __init__(self,
                  sql_config: SQLConfig | None = None,
-                 login_data: dict | None = None,
                  server: str | None = None,
                  database: str | None = None,
                  username: str | None = None,
@@ -402,7 +401,6 @@ class VillSQL:
 
             Args:
                 sql_config (SQLConfig, optional): SQL configuration. Defaults to None.
-                login_data (dict, optional): Login data. Defaults to None.
                 server (str, optional): Server name. Defaults to None.
                 database (str, optional): Database name. Defaults to None.
                 username (str, optional): Username. Defaults to None.
@@ -418,18 +416,10 @@ class VillSQL:
         if do_logs:
             self.__logger: Logger = logger or Logger(file_path = os.path.join(os.getcwd(),
                                                                               "octopus.log"))
-        server_c: str = sql_config.server if sql_config else self.__set_server_value(login_data,
-                                                                                     server,
-                                                                                     "server")
-        database_c: str = sql_config.database if sql_config else self.__set_server_value(login_data,
-                                                                                         database,
-                                                                                         "database")
-        username_c: str = sql_config.username if sql_config else self.__set_server_value(login_data,
-                                                                                         username,
-                                                                                         "username")
-        password_c: str = sql_config.password if sql_config else self.__set_server_value(login_data,
-                                                                                         password,
-                                                                                         "password")
+        server_c: str = sql_config.server if sql_config else server
+        database_c: str = sql_config.database if sql_config else database
+        username_c: str = sql_config.username if sql_config else username
+        password_c: str = sql_config.password if sql_config else password
         self.__client: MsSQLClient = MsSQLClient(server = server_c,
                                                  database = database_c,
                                                  username = username_c,
@@ -437,6 +427,7 @@ class VillSQL:
                                                  is_trusted = is_server_trusted,
                                                  logger = logger,
                                                  allow_execute = allow_execute)
+        del server_c, database_c, username_c, password_c
         self.__row_limit: int | None = row_limit
         self.__tables: list[str] = self.__get_tables()
 
@@ -472,41 +463,6 @@ class VillSQL:
             self.__logger.log(content)
         else:
             print(content)
-
-
-    def __check_key(self,
-                    dictionary: dict,
-                    key: str) -> bool:
-        '''
-            Check if key exists in dictionary
-
-            Args:
-                dictionary (dict): Dictionary
-                key (str): Key
-        '''
-        if key in dictionary:
-            return True
-        return False
-
-
-    def __set_server_value(self,
-                           login_data: dict,
-                           value: str,
-                           key: str) -> str:
-        '''
-            Set server value
-
-            Args:
-                login_data (dict): Login data
-                value (str): Value
-                key (str): Key
-        '''
-        if self.__check_key(login_data,
-                            key):
-            return login_data[key]
-        if value:
-            return value
-        raise VillSqlException(f"No '{key}' found")
 
 
     def __get_row_limit(self) -> str:
@@ -704,8 +660,8 @@ class VillSQL:
         '''
         if not os.path.exists(path):
             raise VillSqlException(f"File not found: {path}")
-        with open(path,
-                  "r",
+        with open(file = path,
+                  mode = "r",
                   encoding = encoding) as file:
             return file.read()
 
