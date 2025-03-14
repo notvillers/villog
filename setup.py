@@ -5,7 +5,7 @@
 from pathlib import Path
 from setuptools import setup, find_packages
 
-def parse_requirements(filename) -> list:
+def parse_requirements(filename: str) -> list:
     '''
         Parse a requirements file returning a list of requirements.
 

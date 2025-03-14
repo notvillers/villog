@@ -98,7 +98,7 @@ class MailMan:
                     file.read(),
                     Name=basename(f)
                 )
-            part['Content-Disposition'] = 'attachment; filename="%s"' % basename(f) # pylint: disable=consider-using-f-string
+            part['Content-Disposition'] = f'attachment; filename="{basename(f)}"'
             msg.attach(part)
         smtp: smtplib.SMTP_SSL = smtplib.SMTP_SSL(self.smtp_server,
                                 self.smtp_port,

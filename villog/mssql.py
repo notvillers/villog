@@ -640,8 +640,8 @@ class VillSQL:
             return file.read()
 
     def execute_file(self,
-                       path: str,
-                       encoding: str = "utf-8-sig") -> None:
+                     path: str,
+                     encoding: str = "utf-8-sig") -> None:
         '''
             Execute file content
 

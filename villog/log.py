@@ -43,13 +43,13 @@ class Logger:
                 enable_remove: if True, it will enable the remove function
                 strip_content: if True, it will strip the content
         '''
-        self.file_path = file_path if file_path else os.path.join(os.getcwd(), f"{gen_uuid()}.log")
-        self.encoding = encoding
-        self.time_format = time_format
-        self.separator = separator
-        self.__silent = silent
-        self.__enable_remove = enable_remove
-        self.__strip_content = strip_content
+        self.file_path: str = file_path if file_path else os.path.join(os.getcwd(), f"{gen_uuid()}.log")
+        self.encoding: str = encoding
+        self.time_format: str = time_format
+        self.separator: str = separator
+        self.__silent: bool = silent
+        self.__enable_remove: bool = enable_remove
+        self.__strip_content: bool = strip_content
 
     def __str__(self) -> str:
         return f"Log file: {self.file_path}"
