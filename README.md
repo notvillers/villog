@@ -56,14 +56,14 @@ for sheet_name in read_excel.get_sheet_names():
 
 ### VillSQL
 ```
-from villog.mssql import VillSQL, Table
+from villog.mssql import SQLConfig, VillSQL
 
-login_dict: dict[str, str] = {"server": "server_name",
-                              "database": "database_name",
-                              "username": "username",
-                              "password": "password"}
+sql_config: SQLConfig = SQLConfig(server = "server_name",
+                                  database = "database_name",
+                                  username = "user_name",
+                                  password = "password")
 
-sql_client: VillSQL = VillSQL(login_data = login_dict)
+sql_client: VillSQL = VillSQL(sql_config = sql_config)
 
 egt: Table = sql_client.get_table("EXAMPLE_TABLE",
                                   raw_filter="col_1 = "example",
