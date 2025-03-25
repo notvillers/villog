@@ -26,7 +26,7 @@ class VillSqlException(Exception):
         super().__init__(message)
 
 
-@dataclass
+@dataclass(slots = True)
 class SQLConfig:
     '''
         VillSQL configuration class
