@@ -56,7 +56,7 @@ for sheet_name in read_excel.get_sheet_names():
 
 ### VillSQL
 ```
-from villog.mssql import SQLConfig, VillSQL
+from villog.mssql import SQLConfig, VillSQL, Table
 
 sql_config: SQLConfig = SQLConfig(server = "server_name",
                                   database = "database_name",
