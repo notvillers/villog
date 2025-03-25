@@ -10,3 +10,4 @@ test.py
 *.css
 *.html
 *.pdf
+pypi.token
