@@ -16,6 +16,13 @@ class MailMan:
     '''
         SMTP client class
     '''
+    __slots__: list[str] = ["smtp_server",
+                            "smtp_login",
+                            "smtp_port",
+                            "smtp_password",
+                            "name",
+                            "do_logs",
+                            "logger"]
 
     def __init__(self,
                  smtp_server: str,
@@ -45,8 +52,10 @@ class MailMan:
         self.do_logs: bool = do_logs
         self.logger: Logger | None = logger if logger or do_logs else (Logger() if do_logs else None) # pylint: disable=line-too-long
 
+
     def __str__(self) -> str:
         return f"{self.smtp_login}@{self.smtp_server}:{self.smtp_port}"
+
 
     def __log(self,
               content: str) -> None:

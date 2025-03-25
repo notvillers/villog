@@ -60,6 +60,7 @@ class WorkSheet:
         self.data: list[list] = data
         self.header_comment: list = header_comment if header_comment else []
 
+
     # Seggesting a column width with min. and max. filter
     def suggest_width(self,
                       col: int,
@@ -85,6 +86,7 @@ class WorkSheet:
 
         return (length if length < max_width else max_width)
 
+
     def set_min_width(self,
                       min_width: int) -> None:
         '''
@@ -94,6 +96,7 @@ class WorkSheet:
                 min_width (int): minimum width
         '''
         self.MIN_WIDTH = min_width
+
 
     def set_max_width(self,
                       max_width: int) -> None:
@@ -131,11 +134,13 @@ class WorkBook:
         self.sheet_count: int = self.__get_sheet_count()
         self.__uuid: str = gen_uuid()
 
+
     def __get_sheet_count(self) -> int:
         '''
             Return the number of sheets
         '''
         return 1 if not self.__is_list else len(self.sheets)
+
 
     # Creating the .xlsx
     def xlsx_create(self,

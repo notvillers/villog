@@ -9,8 +9,10 @@ def gen_uuid() -> str:
     '''Generates a UUID'''
     return str(uuid.uuid4())
 
+
 class LoggerError(Exception):
     '''Exception raised for log file related errors'''
+
 
 class Logger:
     '''A simple logger class'''
@@ -43,7 +45,8 @@ class Logger:
                 enable_remove: if True, it will enable the remove function
                 strip_content: if True, it will strip the content
         '''
-        self.file_path: str = file_path if file_path else os.path.join(os.getcwd(), f"{gen_uuid()}.log")
+        self.file_path: str = file_path if file_path else os.path.join(os.getcwd(),
+                                                                       f"{gen_uuid()}.log")
         self.encoding: str = encoding
         self.time_format: str = time_format
         self.separator: str = separator
@@ -51,8 +54,10 @@ class Logger:
         self.__enable_remove: bool = enable_remove
         self.__strip_content: bool = strip_content
 
+
     def __str__(self) -> str:
         return f"Log file: {self.file_path}"
+
 
     def __error(self,
                 message: str | None = None) -> LoggerError:
@@ -64,14 +69,18 @@ class Logger:
         '''
         raise LoggerError(str(message or ""))
 
+
     def __str_time(self) -> str:
-        '''Returns the current time as a string'''
+        '''
+            Returns the current time as a string
+        '''
         current_time = datetime.datetime.now()
         try:
             return current_time.strftime(self.time_format)
         except Exception as e: # pylint: disable=broad-except
             print(f"Error: {e}")
             return current_time.strftime("%Y.%m.%d %H:%M:%S")
+
 
     def __log_to_file(self,
                       content: any) -> None:
@@ -81,10 +90,14 @@ class Logger:
             Args:
                 content (str): content
         '''
-        with open(self.file_path,
-                  "a+",
-                  encoding = self.encoding) as file:
-            file.write(str(content))
+        try:
+            with open(file = self.file_path,
+                      mode = "a+",
+                      encoding = self.encoding) as file:
+                file.write(str(content))
+        except Exception as e:
+            raise LoggerError(f"Error writing to file: {self.file_path}, error: {e}") from e
+
 
     def __strip(self,
                 content: str) -> str:
@@ -96,6 +109,7 @@ class Logger:
         '''
         return content.strip() if self.__strip_content else content
 
+
     def log(self,
             content: any = None) -> None:
         '''
@@ -105,6 +119,7 @@ class Logger:
                 content (str): content
         '''
         self.__log(content = content)
+
 
     def change_path(self,
                     file_path: str) -> None:
@@ -116,6 +131,7 @@ class Logger:
         '''
         self.__change_path(file_path = file_path)
 
+
     def change_encoding(self,
                         encoding: str) -> None:
         '''
@@ -125,6 +141,7 @@ class Logger:
                 encoding (str): encoding of the log file
         '''
         self.__change_encoding(encoding = encoding)
+
 
     def change_time_format(self,
                            time_format: str) -> None:
@@ -136,6 +153,7 @@ class Logger:
         '''
         self.__change_time_format(time_format = time_format)
 
+
     def change_separator(self,
                          separator: str) -> None:
         '''
@@ -146,17 +164,20 @@ class Logger:
         '''
         self.__change_separator(separator = separator)
 
+
     def clear(self) -> None:
         '''
             Clears the log file
         '''
         self.__clear()
 
+
     def remove(self) -> None:
         '''
             Removes the log file
         '''
         self.__remove()
+
 
     def __log(self,
               content: str = "") -> None:
@@ -165,25 +186,30 @@ class Logger:
             print(content.strip())
         self.__log_to_file(content)
 
+
     def __change_path(self,
                       file_path: str) -> None:
         self.file_path = file_path
         print(f"Changed path from {self.file_path} to {file_path}")
+
 
     def __change_encoding(self,
                           encoding: str) -> None:
         self.encoding = encoding
         print(f"Changed encoding to {encoding}")
 
+
     def __change_time_format(self,
                              time_format: str) -> None:
         self.time_format = time_format
         print(f"Changed time format to {time_format}")
 
+
     def __change_separator(self,
                            separator: str) -> None:
         self.separator = separator
         print(f"Changed separator to {separator}")
+
 
     def __clear(self) -> None:
         if self.__enable_remove:
@@ -194,6 +220,7 @@ class Logger:
                     print(f"Log file cleared ({self.file_path})")
             self.__error(f"Log file does not exist ({self.file_path})")
         self.__error("Removal is not enabled")
+
 
     def __remove(self) -> None:
         if self.__enable_remove:
