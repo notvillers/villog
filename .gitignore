@@ -11,3 +11,4 @@ test.py
 *.html
 *.pdf
 pypi.token
+*.xml
