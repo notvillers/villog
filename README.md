@@ -96,6 +96,8 @@ villsql_client.close()
 ```
 
 ### PDF generator
+> [!IMPORTANT]
+> To use PDF generator on Windows, you need some [configuration](https://stackoverflow.com/a/78749746).
 ```
 from villog.pdf import generate as generate_pdf
 
