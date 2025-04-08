@@ -21,7 +21,7 @@ long_description: str = (this_directory / "README.md").read_text()
 
 
 setup(name = "villog",
-      version = "0.2.8",
+      version = "0.3.0",
       description = "A simple python utility tool for your everyday projects.",
       author = "Krisztián Villers",
       packages = find_packages(),
