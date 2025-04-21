@@ -13,12 +13,42 @@ from villog.writexcel import WorkSheet, WorkBook
 
 class VillSqlException(Exception):
     '''
-        Exception for Octopus 8 python module'
+        VillSQL's general exception
     '''
     def __init__(self,
-                    message: str) -> None:
+                 message: str = "General exception") -> None:
         '''
-            Exception for Octopus 8 python module'
+            VillSQL's general exception
+
+            Args:
+                message (str): Message
+        '''
+        super().__init__(message)
+
+
+class VillSqlPingException(Exception):
+    '''
+        VillSQL's ping exception
+    '''
+    def __init__(self,
+                 message: str = "Can't reach the server") -> None:
+        '''
+            VillSQL's ping exception
+
+            Args:
+                message (str): Message
+        '''
+        super().__init__(message)
+
+
+class VillSqlOdbcDriverException(Exception):
+    '''
+        VillSQL's ODBC driver exception
+    '''
+    def __init__(self,
+                 message: str = "Can't get ODBC driver"):
+        '''
+            VillSQL's ODBC driver exception
 
             Args:
                 message (str): Message
@@ -84,9 +114,9 @@ class MsSQLClient:
         self.logger: Logger | None = logger
         self.driver: str = self.__get_driver()
         if not self.driver:
-            raise VillSqlException("No ODBC driver found")
+            raise VillSqlOdbcDriverException("No ODBC driver found")
         if not self.__ping():
-            raise VillSqlException("Can't reach the server")
+            raise VillSqlPingException(message = "Can't reach the server")
         try:
             self.connection: pyodbc.Connection = self.__connect(username, # pylint: disable=c-extension-no-member
                                                                 password,
