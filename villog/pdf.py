@@ -11,10 +11,9 @@ try:
         '''
             Generate a PDF file from a HTML and CSS file.
 
-            Parameters:
-                html_path (str): HTML string.
-                output_path (str): Output path.
-                css_path (str): CSS string.
+            :param html_string: :class:`str` HTML string
+            :param output_path: :class:`str` Output path for the .pdf file
+            :param css_string: :class:`Optional(Union(str, None))` CSS string. Defaults to `None`
         '''
         HTML(string = html_string).write_pdf(output_path,
                                             stylesheets = [CSS(string = css_string or "")]) # pylint: disable = line-too-long

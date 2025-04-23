@@ -12,18 +12,22 @@ def gen_uuid(length: int = 8) -> str:
     '''
         Generating a random UUID
         
-        Parameters:
-            length (int): length of the UUID
+        .. code-block:: python
+            uuid_str: str = gen_uuid(length = 16)
+
+        :param length: :class:`int` length of the returned uuid (default: 8)
     '''
     return str(uuid.uuid4())[:length]
 
 
 def is_list(obj: any) -> bool:
     '''
-        Return if the object is a list
+        Return true if the object is a list else false
         
-        Parameters:
-            obj (any): object
+        .. code-block:: python
+            list_bool: bool = is_list(variable)
+
+        :param obj: :class:`any` object to check
     '''
     return isinstance(obj, list)
 
@@ -47,14 +51,22 @@ class WorkSheet:
                  data: list[list[any]] = None,
                  header_comment: list = None) -> None:
         '''
-            Worksheet class
+            Worksheet class which later on need to be passed to the Workbook class.
 
-            Parameters:
-                name (str): name of the worksheet
-                header (list[str]): header of the worksheet
-                data (list[list[any]]): data of the worksheet
-                header_comment (list[str, str]): comment for the header
-        '''
+            .. code-block:: python
+
+                sheet = WorkSheet(name = "sheet_1",
+                                  header = ["column_1",
+                                            "column_2"],
+                                  data = [["data_1_1", "data_1_2"],
+                                          ["data_2_1", "data_2_2"]])
+
+            :param name: :class:`str` name of the worksheet.
+            :param header: :class:`list[str]` or :class:`None` (list[str] or None) Header of the worksheet.
+            :param data: :class:`list[list[str]]` or :class:`None` Data matrix of the worksheet
+            :param header_comment: :class:`list[list[str]]` or :class:`None` Comment for header
+
+        ''' # pylint: disable=line-too-long
         self.name: str = name if len(name) < 32 else name[:31]
         self.header: list[str] = header
         self.data: list[list] = data
@@ -120,13 +132,16 @@ class WorkBook:
 
     def __init__(self,
                  name: str,
-                 sheets: list[WorkSheet]) -> None:
+                 sheets: list[WorkSheet] | WorkSheet) -> None:
         '''
             Workbook class
 
-            Parameters:
-                name (str): name of the workbook
-                sheets (list[WorkSheet]): worksheets of the workbook
+            .. code-block:: python
+                book = Workbook(name = "book_1",
+                                sheets = [sheet_1, sheet_2])
+
+            :param name: :class:`str` Name of the workbook
+            :param sheets: :class:`Union(list[WorkSheet], WorkSheet)` worksheets to fill with
         '''
         self.name: str = name
         self.sheets: list[WorkSheet] = sheets
@@ -148,8 +163,10 @@ class WorkBook:
         '''
             Creating the .xlsx
 
-            Parameters:
-                file_path (str): path of the .xlsx file
+            .. code-block:: python
+                book.xlsx_create(file_path = "example.xlsx")
+
+            :param file_path: :class:`str` Excel create path
         '''
 
         file_path = file_path or os.path.join(os.getcwd(),

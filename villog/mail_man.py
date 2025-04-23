@@ -35,14 +35,13 @@ class MailMan:
         '''
             SMTP client class
 
-            Args:
-                smtp_server (str): SMTP server
-                smtp_login (str): SMTP login
-                smtp_port (int): SMTP port
-                smtp_password (str): SMTP password
-                name (str): Name
-                do_logs (bool): Do logs
-                logger (Logger): Logger
+            :param smtp_server: :class:`str` SMTP server
+            :param smtp_login: :class:`str` SMTP login
+            :param smtp_port: :class:`int` SMTP port
+            :param smtp_password: :class:`str` SMTP password
+            :param name: :class:`str` Name of the sender
+            :param dp_logs: :class:`Optional(bool)` Let the mail manager log. Defaults to `True`
+            :param logger: :class:`Union(Optional(Logger, None))` Logger class. Defaults to `None`
         '''
         self.smtp_server: str = smtp_server
         self.smtp_login: str = smtp_login
@@ -59,7 +58,11 @@ class MailMan:
 
     def __log(self,
               content: str) -> None:
-        '''Log content'''
+        '''
+            Log content
+            
+            :param content: :class:`str` Content to log
+        '''
         if self.do_logs:
             self.logger.log(content)
         else:

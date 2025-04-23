@@ -18,10 +18,9 @@ class ReadExcel:
         '''
             Excel reader class
 
-            Args:
-                path (str): Path to the excel file
-                read_on_init (bool): Read the excel file on initialization
-        '''
+            :param path: :class:`str` Path to the excel
+            :param read_on_init: :class:`Optional(bool)` Read excel's content on init. Defaults to `False`
+        ''' # pylint: disable=line-too-long
         self.path: str = path
         self.data: pandas.DataFrame = self.read() if read_on_init else None
 
@@ -45,8 +44,7 @@ class ReadExcel:
         '''
             Get the content of a sheet
 
-            Args:
-                sheet_name (str): Name of the sheet
+            :param sheet_name: :class:`str` Sheet's name
         '''
         return pandas.read_excel(self.path, sheet_name)
 
@@ -56,8 +54,7 @@ class ReadExcel:
         '''
             Get the content of a sheet in list
 
-            Args:
-                sheet_name (str): Name of the sheet
+            :param sheet_name: :class:`str` Sheet's name
         '''
         return pandas.read_excel(self.path,
                                  sheet_name,

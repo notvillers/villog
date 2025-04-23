@@ -20,8 +20,7 @@ class VillSqlException(Exception):
         '''
             VillSQL's general exception
 
-            Args:
-                message (str): Message
+            :param message: :class:`str` Exception's message
         '''
         super().__init__(message)
 
@@ -35,8 +34,7 @@ class VillSqlPingException(Exception):
         '''
             VillSQL's ping exception
 
-            Args:
-                message (str): Message
+            :param message: :class:`str` Exception's message
         '''
         super().__init__(message)
 
@@ -50,8 +48,7 @@ class VillSqlOdbcDriverException(Exception):
         '''
             VillSQL's ODBC driver exception
 
-            Args:
-                message (str): Message
+            :param message: :class:`str` Exception's message
         '''
         super().__init__(message)
 
@@ -62,11 +59,10 @@ class SQLConfig:
         VillSQL configuration class
         Helps to store SQL configuration
 
-        Args:
-            server (str): Server name
-            database (str): Database name
-            username (str): Username
-            password (str): Password
+        :param server: :class:`str`
+        :param database: :class:`str`
+        :param username: :class:`str`
+        :param password: :class:`str`
     '''
     server: str
     database: str
@@ -100,14 +96,14 @@ class MsSQLClient:
         '''
             MsSQL client class
 
-            Args:
-                server (str): Server name
-                database (str): Database name
-                username (str): Username
-                password (str): Password
-                is_trusted (bool, optional): Is trusted connection. Defaults to True.
-                logger (Logger, optional): Logger. Defaults to None.
-        '''
+            :param server: :class:`str` Server name
+            :param database: :class:`str` Database name
+            :param username: :class:`str` Username
+            :param password: :class:`str` Password
+            :param is_trusted: :class:`Optional(bool)` Is the connection trusted? Defaults to `True`
+            :param allow_execute: :class:`Optional(bool)` Does the connection allowed to make executions? Defaults to `False`
+            :param logger: :class:`Optional(Union(Logger, None))` Logger class. Defaults to `None`
+        ''' # pylint: disable=line-too-long
         self.server: str = server
         self.database: str = database
         self.allow_execute: bool = allow_execute
@@ -137,8 +133,7 @@ class MsSQLClient:
         '''
             Log content
 
-            Args:
-                content (str): Content to log
+            :param content: :class:`str` Content to log
         '''
         if self.logger:
             self.logger.log(content)
@@ -215,10 +210,9 @@ class MsSQLClient:
         '''
             Connect to the server
 
-            Args:
-                username (str): Username
-                password (str): Password
-                is_trusted (bool, optional): Is trusted connection. Defaults to True.
+            :param username: :class:`str` Username
+            :param password: :class:`str` Password
+            :param is_trusted: :class:`Optional(bool)` Is the connection trusted? Defaults to `True`
         '''
         connection_string: str = ""
         connection_string += 'DRIVER={ODBC Driver ' + self.driver
@@ -248,9 +242,12 @@ class MsSQLClient:
         '''
             Execute query
 
-            Args:
-                query (str): Query
-                insert (list, optional): Insert values. Defaults to None.
+            .. code-block:: python
+                mssql_client.execute(query = "select * from ?",
+                                     insert = ("table_name"))
+
+            :param query: :class:`str` query to run
+            :param insert: :class:`Optional(Union(list, None))` tuple to insert into the query text
         '''
         if self.allow_execute:
             if insert is not None:
@@ -265,13 +262,16 @@ class MsSQLClient:
 
     def select(self,
                query: str,
-               insert: list | None = None) -> tuple|None:
+               insert: list | None = None) -> tuple | None:
         '''
             Select query
 
-            Args:
-                query (str): Query
-                insert (list, optional): Insert values. Defaults to None.
+            .. code-block:: python
+                columns, result = mssql_client.select(query = "select * from ?",
+                                                      insert = ("table_name"))
+
+            :param query: :class:`str` query to run
+            :param insert: :class:`Optional(Union(list, None))` tuple to insert into the query text
         '''
         if insert is not None:
             self.cursor.execute(query, insert)
@@ -289,9 +289,12 @@ class MsSQLClient:
             Select one value
             (If the query returns more than one value, it will return the first one)
 
-            Args:
-                query (str): Query
-                insert (list, optional): Insert values. Defaults to None.
+            .. code-block:: python
+                value = mssql_client.one_value_select(query = "select * from ?",
+                                                      insert = ("table_name"))
+
+            :param query: :class:`str` query to run
+            :param insert: :class:`Optional(Union(list, None))` tuple to insert into the query text.
         '''
         _, result = self.select(query,
                                 insert)
@@ -307,14 +310,13 @@ class Table:
                  "rows"]
 
     def __init__(self,
-                 columns: list,
-                 rows: list[list]) -> None:
+                 columns: list[str],
+                 rows: list[list[any]]) -> None:
         '''
             Table class for Octopus
 
-            Args:
-                columns (list): Columns
-                rows (list[list]): Rows
+            :param columns: :class:`list[str]` Columns
+            :param rows: :class:`list[list[any]]` Rows
         '''
         self.columns: list = columns
         self.rows: list[list] = rows
@@ -339,8 +341,7 @@ class Table:
         '''
             Return the given column if exists
 
-            Args:
-                column_name (str): Column name
+            :param column_name: :class:`str` Column name
         '''
         if isinstance(column_name, list):
             raise VillSqlException("For multiple columns use 'return_columns'")
@@ -355,8 +356,7 @@ class Table:
         '''
             Return the given columns if exists
 
-            Args:
-                column_names (list[str]): Column names
+            :param column_names: :class:`list[str]` Column names
         '''
         if not isinstance(column_names,
                           list):
@@ -380,8 +380,7 @@ class Table:
         '''
             Filter table by column names
 
-            Args:
-                column_names (list[str]): Column names
+            :param column_names: :class:`str` Column names
         '''
         self.rows = self.return_columns(column_names)
         self.columns = column_names
@@ -392,9 +391,7 @@ class Table:
         '''
             Export table to excel
 
-            Args:
-                path (str, optional): Path. Defaults to None.
-                sheet_name (str, optional): Sheet name. Defaults to None.
+            :param path: :class:`str` Path to create excel
         '''
         WorkBook(name = "Book1",
                  sheets = WorkSheet(name = "Sheet1",
@@ -429,19 +426,18 @@ class VillSQL:
         '''
             Octopus 8 class
 
-            Args:
-                sql_config (SQLConfig, optional): SQL configuration. Defaults to None.
-                server (str, optional): Server name. Defaults to None.
-                database (str, optional): Database name. Defaults to None.
-                username (str, optional): Username. Defaults to None.
-                password (str, optional): Password. Defaults to None.
-                is_server_trusted (bool, optional): Is trusted connection. Defaults to True.
-                do_logs (bool, optional): Do logs. Defaults to True.
-                logger (Logger, optional): Logger. Defaults to None.
-                row_limit (int, optional): Row limit. Defaults to None.
-                do_table_fetch (bool, optional): Do table fetch. Defaults to True.
-                allow_execute (bool, optional): Allow execute. Defaults to False.
-        '''
+            :param sql_config: :class:`Optional(Union(SQLConfig, None))` SQL config for easier configuration. Defaults to `None`
+            :param server: :class:`Optional(Union(str, None))` Server name. Defaults to `None`
+            :param database: :class:`Optional(Union(str, None))` Database name. Defaults to `None`
+            :param username: :class:`Optional(Union(str, None))` Username. Defaults to `None`
+            :param password: :class:`Optional(Union(str, None))` Password. Defaults to `None`
+            :param is_server_trusted: :class:`Optional(bool)` Is the connection trusted? Defaults to `True`
+            :param do_logs: :class:`Optional(bool)` Let the class make logs. Defaults to `True`
+            :param logger: :class:`Optional(Union(Logger, None))` Logger to make logs by. Defaults to `None`
+            :param row_limit: :class:`Union(Optional(int, None))` Row limit of selects. Defaults to `None`
+            :param do_table_fetch: :class:`Optional(bool)` Fetch tables to variables. Defaults to `False`
+            :param allow_execute: :class:`Optional(bool)` Does the connection allowed to make executions? Defaults to `False`
+        ''' # pylint: disable=line-too-long
         self.__do_logs: bool = do_logs
         if do_logs:
             self.__logger: Logger = logger or Logger(file_path = os.path.join(os.getcwd(),
@@ -486,8 +482,7 @@ class VillSQL:
         '''
             Log content
         
-            Args:
-                content (str): Content to log
+            :param content: :class:`str` Content to log
         '''
         if self.__do_logs:
             self.__logger.log(content)
@@ -509,8 +504,7 @@ class VillSQL:
         '''
             Set row limit
         
-            Args:
-                row_limit (int): Row limit
+            :param row_limit: :class:`int` Set row limit for selects
         '''
         self.__row_limit = row_limit
 
@@ -532,8 +526,7 @@ class VillSQL:
         '''
             Check if table exists
 
-            Args:
-                table (str): Table name
+            :param table: :class:`str` Table to check
         '''
         for tbl in self.__tables:
             if tbl.lower() == table.lower():
@@ -548,8 +541,7 @@ class VillSQL:
         '''
             Convert kwargs filter to query
         
-            Args:
-                kfilter_item (list): Kwargs filter item
+            :param kfilter_item: :class:`list` kwargs filter item
         '''
         if isinstance(kfilter_item[1],
                       str):
@@ -571,15 +563,18 @@ class VillSQL:
         '''
             Selects a table from the database and returns it as a Table object
 
-            Args:
-                table (str): Database table's name
-                raw_filter (str, optional): Raw filter string after where clause. Defaults to "". 
-                    Eg. "column like '%xyz%'"
-                order_by (list[tuple], optional): Order by clause. Defaults to None. 
-                    Eg. [("column_name_1", "ASC"), ("column_name_2", "DESC")]
-                **kfilter: Kwargs filter after the where clause. Defaults to {}. 
-                    Eg. column_name_1 = "value_1", column_name_2 = 123
-        '''
+            .. code-block:: python
+                table_result = demo_client.get_table(table = "TABLE_NAME",
+                                                     raw_filter = "column_1 like '%xyz%'",
+                                                     order_by = [("column_1", "ASC"),
+                                                                 ("column_2", "DESC")],
+                                                     column_2 = 1)
+
+            :param table: :class:`str` Table's name
+            :param raw_filter: :class:`Optional(str)` Raw filter string to where clause. Defaults to `""`
+            :param order_by: :class:`Optional(Union(list[tuple], None))` Order by clause. Defaults to `None`
+            :param **kfilter: :class:`**kwargs` Kwargs filter adter the where caluse. Default to `{}`
+        ''' # pylint: disable=line-too-long
         if self.__is_table(table):
             query: str = f"select {self.__get_row_limit()} * from {table} with (nolock) where 1 = 1"
             if raw_filter:
@@ -602,12 +597,15 @@ class VillSQL:
                      query: str,
                      inserter: list[any] | None = None) -> tuple | None:
         '''
-            Selects a custom query from the database
+            Select query
 
-            Arg:
-                query (str): Query string
-                inserter (list[any], optional): Insert values. Defaults to None.
-        '''
+            .. code-block:: python
+                columns, result = demo_client.custom_query(query = "select * from ?",
+                                                           inserter = ("table_name"))
+
+            :param query: :class:`str` query to run
+            :param inserter: :class:`Optional(Union(list, None))` tuple to insert into the query text
+        ''' # pylint: disable=line-too-long
         if self.__allow_execute:
             return self.__client.select(query,
                                         inserter)
@@ -618,12 +616,15 @@ class VillSQL:
                               query: str,
                               inserter: list[any] | None = None) -> Table:
         '''
-            Selects a custom query from the database and returns it as a Table object
+            Query to :class:`Table`
 
-            Arg:
-                query (str): Query string
-                inserter (list[any], optional): Insert values. Defaults to None.
-        '''
+            .. code-block:: python
+                table_result = demo_client.custom_query_to_table(query = "select * from ?",
+                                                                 inserter = ("table_name"))
+
+            :param query: :class:`str` query to run
+            :param inserter: :class:`Optional(Union(list, None))` tuple to insert into the query text
+        ''' # pylint: disable=line-too-long
         columns, result = self.custom_query(query,
                                             inserter)
         if result:
@@ -635,12 +636,15 @@ class VillSQL:
                                   query: str,
                                   inserter: list[any] | None = None) -> list[str] | None:
         '''
-            Selects a custom query from the database and returns only the columns
+            Query only columns
 
-            Arg:
-                query (str): Query string
-                inserter (list[any], optional): Insert values. Defaults to None.
-        '''
+            .. code-block:: python
+                columns = demo_client.custom_query_only_columns(query = "select * from ?",
+                                                                inserter = ("table_name"))
+
+            :param query: :class:`str` query to run
+            :param inserter: :class:`Optional(Union(list, None))` tuple to insert into the query text
+        ''' # pylint: disable=line-too-long
         columns, _ = self.__client.select(query,
                                           inserter)
         return columns
@@ -650,12 +654,15 @@ class VillSQL:
                                  query: str,
                                  inserter: list[any] | None = None) -> list[list] | None:
         '''
-            Selects a custom query from the database and returns only the values
+            Query only values
 
-            Arg:
-                query (str): Query string
-                inserter (list[any], optional): Insert values. Defaults to None.
-        '''
+            .. code-block:: python
+                values = demo_client.custom_query_only_values(query = "select * from ?",
+                                                              inserter = ("table_name"))
+
+            :param query: :class:`str` query to run
+            :param inserter: :class:`Optional(Union(list, None))` tuple to insert into the query text
+        ''' # pylint: disable=line-too-long
         _, result = self.__client.select(query,
                                          inserter)
         return result
@@ -665,12 +672,15 @@ class VillSQL:
                 query: str,
                 insert: list | None = None) -> None:
         '''
-            Execute a query
+            Execute query
 
-            Args:
-                query (str): Query string
-                insert (list, optional): Insert values. Defaults to None.
-        '''
+            .. code-block:: python
+                mssql_client.execute(query = "select * from ?",
+                                     insert = ("table_name"))
+
+            :param query: :class:`str` query to run
+            :param insert: :class:`Optional(Union(list, None))` tuple to insert into the query text
+        ''' # pylint: disable=line-too-long
         if self.__allow_execute:
             self.__client.execute(query,
                                   insert)
@@ -684,9 +694,8 @@ class VillSQL:
         '''
             Read file content
 
-            Args:
-                path (str): File path
-                encoding (str, optional): Encoding. Defaults to "utf-8-sig".
+            :param path: :class:`str` Path to the file
+            :param encoding: :class:`str` Encoding of the file. Defaults to `utf-8-sig`
         '''
         if not os.path.exists(path):
             raise VillSqlException(f"File not found: {path}")
@@ -702,9 +711,8 @@ class VillSQL:
         '''
             Execute file content
 
-            Args:
-                path (str): File path
-                encoding (str, optional): Encoding. Defaults to "utf-8-sig".
+            :param path: :class:`str` Path to the file
+            :param encoding: :class:`str` Encoding of the file. Defaults to `utf-8-sig`
         '''
         return self.custom_query(self.__read_file(path,
                                                   encoding))
@@ -714,11 +722,10 @@ class VillSQL:
                               path: str,
                               encoding: str = "utf-8-sig") -> Table:
         '''
-            Execute file content and return as Table
+            Execute file content and return as :class:`Table`
 
-            Args:
-                path (str): File path
-                encoding (str, optional): Encoding. Defaults to "utf-8-sig".
+            :param path: :class:`str` Path to the file
+            :param encoding: :class:`str` Encoding of the file. Defaults to `utf-8-sig`
         '''
         return self.custom_query_to_table(self.__read_file(path,
                                                            encoding))
