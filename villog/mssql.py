@@ -586,7 +586,7 @@ class VillSQL:
             :param table: :class:`str` Table's name
             :param raw_filter: :class:`Optional(str)` Raw filter string to where clause. Defaults to `""`
             :param order_by: :class:`Optional(Union(list[tuple], None))` Order by clause. Defaults to `None`
-            :param **kfilter: :class:`**kwargs` Kwargs filter adter the where caluse. Default to `{}`
+            :param kfilter: :class:`dict` **Kwargs filter adter the where caluse. Default to `{}`
         ''' # pylint: disable=line-too-long
         if self.__is_table(table):
             query: str = f"select {self.__get_row_limit()} * from {table} with (nolock) where 1 = 1"
