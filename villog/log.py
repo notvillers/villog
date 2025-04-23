@@ -3,10 +3,11 @@
 import os
 import datetime
 import uuid
-from typing import Optional
 
 def gen_uuid() -> str:
-    '''Generates a UUID'''
+    '''
+        Generates a UUID
+    '''
     return str(uuid.uuid4())
 
 
@@ -26,7 +27,7 @@ class Logger:
                             "__strip_content"]
 
     def __init__(self,
-                 file_path: Optional[str] = None,
+                 file_path: str | None = None,
                  encoding: str = "utf-8-sig",
                  time_format: str = "%Y.%m.%d %H:%M:%S",
                  separator: str = "\t",
@@ -36,15 +37,18 @@ class Logger:
         '''
             Logger class
 
-            Parameters:
-                file_path: path of the log file
-                encoding: encoding of the log file
-                time_format: time format
-                separator: separator
-                silent: if True, it will not print the log, just write it to the file
-                enable_remove: if True, it will enable the remove function
-                strip_content: if True, it will strip the content
-        '''
+            .. code-block:: python
+                demo_logger = Logger(file_path = "example.log",
+                                     strip_content = True)
+
+            :param file_path: :class:`Optional(Union(str, None))` File's path. Defaults to `None`
+            :param encoding: :class:`Optional(str)` File's encoding. Defaults to `"utf-8-sig"`
+            :param time_format: :class:`Optional(str)` Log's time format. Defaults to `"%Y.%m.%d %H:%M:%S"`
+            :param spearator: :class:`Optional(str)` Log's separator betwen the time and the content. Defaults to `"\\t"`
+            :param silent: :class:`Optional(bool)` If set to `True` then won't print to console. Defaults to `False`
+            :param enable_remove: :class:`Optional(bool)` If set to `True` then it enables removing content. Defaults to `False`
+            :param strip_content: :class:`Optional(bool)` If set to `True` then strips content before logging it. Defaults to `False`
+        ''' # pylint: disable=line-too-long
         self.file_path: str = file_path if file_path else os.path.join(os.getcwd(),
                                                                        f"{gen_uuid()}.log")
         self.encoding: str = encoding
@@ -115,8 +119,10 @@ class Logger:
         '''
             Logs content to file
 
-            Parameters:
-                content (str): content
+            .. code-block:: python
+                demo_logger.log(content = "Example")
+
+            :param content: :class:`any` Content to log
         '''
         self.__log(content = content)
 
@@ -126,8 +132,10 @@ class Logger:
         '''
             Changes the log file path
 
-            Parameters:
-                file_path (str): path of the log file
+            .. code-block:: python
+                demo_logger.change_path(file_path = "example.log")
+
+            :param file_path: :class:`str` New path to the log file
         '''
         self.__change_path(file_path = file_path)
 
@@ -137,8 +145,10 @@ class Logger:
         '''
             Changes the log file encoding
 
-            Parameters:
-                encoding (str): encoding of the log file
+            .. code-block:: python
+                demo_logger.change_encoding(encoding = "utf-8-sig")
+
+            :param encoding: :class:`str` New encoding to the log file
         '''
         self.__change_encoding(encoding = encoding)
 
@@ -148,8 +158,10 @@ class Logger:
         '''
             Changes the time format
 
-            Parameters:
-                time_format (str): time format
+            .. code-block:: python
+                demo_logger.change_time_format(time_format = "%Y.%m.%d %H:%M:%S")
+
+            :param time_format: :class:`str` New time format for the log file
         '''
         self.__change_time_format(time_format = time_format)
 
@@ -158,9 +170,11 @@ class Logger:
                          separator: str) -> None:
         '''
             Changes the separator
+            
+            .. code-block:: python
+                demo_logger.change_separator(separator = "\\t")
 
-            Parameters:
-                separator (str): separator
+            :param separator: :class:`str` New separator for the log file
         '''
         self.__change_separator(separator = separator)
 

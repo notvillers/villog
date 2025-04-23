@@ -168,10 +168,9 @@ class MsSQLClient:
         '''
             Ping the server
 
-            Args:
-                attempt (int, optional): Number of attempts. Defaults to 5.
-                wait (int, optional): Wait time between attempts. Defaults to 10.
-        '''
+            :param attempt: :class:`int` How many time(s) should `self.__ping()` retry. Defaults to `5`
+            :param wait: :class:`int` Wait between retries. Defaults to `10`
+        ''' # pylint: disable=line-too-long
         if attempt != 0:
             response_time: float | None = ping(self.server)
             if response_time or response_time == 0:
@@ -287,7 +286,7 @@ class MsSQLClient:
                          insert: list | None = None) -> any:
         '''
             Select one value
-            (If the query returns more than one value, it will return the first one)
+            (If the query returns more than one value, it will return the first one like `values[0][0]`)
 
             .. code-block:: python
                 value = mssql_client.one_value_select(query = "select * from ?",
@@ -295,7 +294,7 @@ class MsSQLClient:
 
             :param query: :class:`str` query to run
             :param insert: :class:`Optional(Union(list, None))` tuple to insert into the query text.
-        '''
+        ''' # pylint: disable=line-too-long
         _, result = self.select(query,
                                 insert)
         return result[0][0] if result else None
@@ -318,7 +317,7 @@ class Table:
             :param columns: :class:`list[str]` Columns
             :param rows: :class:`list[list[any]]` Rows
         '''
-        self.columns: list = columns
+        self.columns: list[str] = columns
         self.rows: list[list] = rows
 
 
@@ -327,8 +326,7 @@ class Table:
         '''
             Get column index
 
-            Args:
-                column_name (str): Column name
+            :param column_name: :class:`str` Name of the column
         '''
         for index, column in enumerate(self.columns):
             if column.lower() == column_name.lower():
@@ -341,6 +339,9 @@ class Table:
         '''
             Return the given column if exists
 
+            .. code-block:: python
+                column_1 = demo_table.return_column(column_name = "column_1")
+            
             :param column_name: :class:`str` Column name
         '''
         if isinstance(column_name, list):
@@ -356,8 +357,11 @@ class Table:
         '''
             Return the given columns if exists
 
+            .. code-block:: python
+                column_1_2_matrix = demo_table.return_columns(column_names = ["column_1", "column_2"])
+
             :param column_names: :class:`list[str]` Column names
-        '''
+        ''' # pylint: disable=line-too-long
         if not isinstance(column_names,
                           list):
             if isinstance(column_names,
@@ -380,6 +384,9 @@ class Table:
         '''
             Filter table by column names
 
+            .. code-block:: python
+                demo_table.set_filter(column_names = ["column_1", "column_2"])
+
             :param column_names: :class:`str` Column names
         '''
         self.rows = self.return_columns(column_names)
@@ -391,6 +398,9 @@ class Table:
         '''
             Export table to excel
 
+            .. code-block:: python
+                demo_table.export_to_excel(path = "demo_table.xlsx")
+            
             :param path: :class:`str` Path to create excel
         '''
         WorkBook(name = "Book1",
@@ -502,8 +512,11 @@ class VillSQL:
     def set_row_limit(self,
                       row_limit: int) -> None:
         '''
-            Set row limit
+            Set row limit (like using `select top n`)
         
+            .. code-block:: python
+                demo_sql.set_row_limit(row_limit = 100)
+
             :param row_limit: :class:`int` Set row limit for selects
         '''
         self.__row_limit = row_limit
@@ -711,6 +724,9 @@ class VillSQL:
         '''
             Execute file content
 
+            .. code-block:: python
+                mssql_client.execute_file(path = "example.sql")
+            
             :param path: :class:`str` Path to the file
             :param encoding: :class:`str` Encoding of the file. Defaults to `utf-8-sig`
         '''
@@ -723,6 +739,9 @@ class VillSQL:
                               encoding: str = "utf-8-sig") -> Table:
         '''
             Execute file content and return as :class:`Table`
+
+            .. code-block:: python
+                demo_table = mssql_client.execute_file_to_table(path = "example.sql")
 
             :param path: :class:`str` Path to the file
             :param encoding: :class:`str` Encoding of the file. Defaults to `utf-8-sig`

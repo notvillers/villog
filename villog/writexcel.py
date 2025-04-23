@@ -56,8 +56,7 @@ class WorkSheet:
             .. code-block:: python
 
                 sheet = WorkSheet(name = "sheet_1",
-                                  header = ["column_1",
-                                            "column_2"],
+                                  header = ["column_1", "column_2"],
                                   data = [["data_1_1", "data_1_2"],
                                           ["data_2_1", "data_2_2"]])
 
@@ -81,10 +80,9 @@ class WorkSheet:
         '''
             Suggesting a column width with min. and max. filter
         
-            Parameters:
-                col (int): column index
-                min_width (int): minimum width
-                max_width (int): maximum width
+            :param col: :class:`int` Column index
+            :param min_width: :class:`int` Minimum width. Defaults to `MIN_WITDH` variable.
+            :param max_width: :class:`int` Maximum width. Defaults to `MAX_WIDTH` variable
         '''
 
         length: int = min_width
@@ -104,8 +102,7 @@ class WorkSheet:
         '''
             Setting the minimum width
         
-            Parameters:
-                min_width (int): minimum width
+            :param min_width: :class:`int` Minimum width
         '''
         self.MIN_WIDTH = min_width
 
@@ -115,8 +112,7 @@ class WorkSheet:
         '''
             Setting the maximum width
         
-            Parameters:
-                max_width (int): maximum width
+            :param max_width: :class:`int` Maximum width
         '''
         self.MAX_WIDTH = max_width
 

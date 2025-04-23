@@ -35,6 +35,15 @@ class MailMan:
         '''
             SMTP client class
 
+            .. code-block:: python
+                demo_mail = MailMan(smtp_server = "smtp.example.com",
+                                    smtp_login = "example@example.com",
+                                    smtp_port = 1234,
+                                    smtp_password = "example_password",
+                                    name = "Ex Ample",
+                                    do_logs = True,
+                                    logger = Logger(file_path = "mail.log"))
+
             :param smtp_server: :class:`str` SMTP server
             :param smtp_login: :class:`str` SMTP login
             :param smtp_port: :class:`int` SMTP port
@@ -77,13 +86,19 @@ class MailMan:
         '''
             Send e-mail
 
-            Args:
-                subject (str): Subject
-                body (str): Body
-                send_to (list[str]): Send to e-mail addresses
-                files (list[str]): Files path
-                images (list[str]): Images path
-        '''
+            .. code-block:: python
+                demo_mail.send(subject = "Example Mail",
+                               body = "<html><body>Example mail content with image <img src='cid:logo'></body></html>",
+                               send_to = ["recipient_1@example.com", "recipient_2@example.com"],
+                               files = ["example.xlsx"],
+                               images = ["logo.png"])
+
+            :param subject: :class:`str` Subject of the email
+            :param body: :class:`str` HTML body of the email
+            :param send_to: :class:`list[str]` Recipients
+            :param files: :class:`Optional(Union(list[str], None))` File(s) to attach. Defaults to `None`
+            :param images: :class:`Optional(Union(list[str], None))` Image(s) to attach. Defaults to `None`
+        ''' # pylint: disable = line-too-long
         self.__log(f"Sending mail {subject}")
         assert isinstance(send_to, list)
         msg: MIMEMultipart = MIMEMultipart()

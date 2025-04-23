@@ -18,6 +18,10 @@ class ReadExcel:
         '''
             Excel reader class
 
+            .. code-block:: python
+                xlsx = ReadExcel(path = "example.xlsx",
+                                 read_on_init = True)
+
             :param path: :class:`str` Path to the excel
             :param read_on_init: :class:`Optional(bool)` Read excel's content on init. Defaults to `False`
         ''' # pylint: disable=line-too-long
@@ -28,6 +32,10 @@ class ReadExcel:
     def read(self) -> None:
         '''
             Read the excel file
+
+            .. code-block:: python
+                # Only need if ReadExcel.read_on_init was left empty or set to False on init
+                xlsx.read()
         '''
         self.data = pandas.read_excel(self.path)
 
@@ -35,6 +43,9 @@ class ReadExcel:
     def get_sheet_names(self) -> list:
         '''
             Get the sheet names of the excel file
+
+            .. code-block:: python
+                sheets = xlsx.get_sheet_names()
         '''
         return pandas.ExcelFile(self.path).sheet_names
 
@@ -43,6 +54,9 @@ class ReadExcel:
                           sheet_name: str) -> pandas.DataFrame:
         '''
             Get the content of a sheet
+
+            .. code-block:: python
+                pd_frame = xlsx.get_sheet_content(sheet_name = "example_sheet_name")
 
             :param sheet_name: :class:`str` Sheet's name
         '''
@@ -53,6 +67,9 @@ class ReadExcel:
                                   sheet_name: str) -> list[list[any]]:
         '''
             Get the content of a sheet in list
+
+            .. code-block:: python
+                data_matrix = xlsx.get_sheet_content_to_list(sheet_name = "example_sheet_name")
 
             :param sheet_name: :class:`str` Sheet's name
         '''
