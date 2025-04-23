@@ -1,4 +1,6 @@
-'''A simple logger'''
+'''
+    Villog utility tool
+'''
 
 from villog import log
 from villog import writexcel
