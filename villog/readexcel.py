@@ -2,7 +2,7 @@
     Excel reader module
 '''
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 import pandas
 import numpy
 
@@ -26,7 +26,7 @@ class Sheet:
         Excel sheet
     '''
     name: str
-    data: list[list[any]] = []
+    data: list[list[any]] = field(default_factory = list)
 
 
 class ReadExcel:
