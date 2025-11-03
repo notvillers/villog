@@ -78,8 +78,7 @@ class Logger:
         '''
             Prints error message
 
-            Parameters:
-                message (str): error message
+            :param message: class:`str` error message
         '''
         raise LoggerError(message = str(message or ""))
 
