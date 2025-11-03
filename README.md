@@ -2,6 +2,18 @@
 
 Can be installed with [pip](https://pypi.org/project/villog/).
 
+> [!WARNING]
+> On MacOS you need to install ODBC drivers differently:
+
+1. 
+```
+~ brew install unixodbc
+```
+2.
+```
+~ pip install --no-binary :all: pyodbc
+```
+
 ## Modules
 - Logger
 - Excel generator
