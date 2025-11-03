@@ -7,11 +7,13 @@ Can be installed with [pip](https://pypi.org/project/villog/).
 
 1. 
 ```
-~ brew install unixodbc
+# Install UnixODBC with Brew
+brew install unixodbc
 ```
 2.
 ```
-~ pip install --no-binary :all: pyodbc
+# Install PyODBC
+pip install --no-binary :all: pyodbc
 ```
 
 ## Modules
