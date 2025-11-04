@@ -132,7 +132,7 @@ class MailMan:
                                 context = context)
         smtp.login(self.smtp_login,
                    self.smtp_password)
-        smtp.sendmail(self.smtp_login, 
+        smtp.sendmail(self.smtp_login,
                       send_to, msg.as_string())
         self.__log(f"Mail sent to {send_to}")
         smtp.close()

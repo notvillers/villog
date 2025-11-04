@@ -21,6 +21,6 @@ try:
             :param css_string: :class:`Optional(Union(str, None))` CSS string. Defaults to `None`
         '''
         HTML(string = html_string).write_pdf(output_path,
-                                            stylesheets = [CSS(string = css_string or "")]) # pylint: disable = line-too-long
+                                             stylesheets = [CSS(string = css_string or "")]) # pylint: disable = line-too-long
 except Exception as e: # pylint: disable=broad-exception-caught
     print(e)

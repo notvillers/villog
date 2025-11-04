@@ -9,8 +9,7 @@ def parse_requirements(filename: str) -> list:
     '''
         Parse a requirements file returning a list of requirements.
 
-        Args:
-            filename (str): The path to the requirements file.
+        :param filename: :class:`str` The path to the requirements file.
     '''
     requirements_path: str = Path(__file__).parent / filename
     with requirements_path.open() as f:
