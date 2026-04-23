@@ -8,7 +8,7 @@ from os.path import basename
 from email.mime.application import MIMEApplication
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from email.utils import COMMASPACE, formatdate
+from email.utils import COMMASPACE, formatdate, make_msgid
 from email.mime.image import MIMEImage
 from villog.log import Logger
 
@@ -106,6 +106,7 @@ class MailMan:
         msg["To"] = COMMASPACE.join(send_to)
         msg["Date"] = formatdate(localtime = True)
         msg["Subject"] = subject
+        msg["Message-ID"] = make_msgid(domain = self.smtp_login.split('@')[-1])
         context: ssl.SSLContext = ssl.create_default_context()
 
         msg.attach(MIMEText(body,
